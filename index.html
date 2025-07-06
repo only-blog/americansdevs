@@ -1,0 +1,4325 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>American Dev - Social Network</title>
+    
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts - Bulletproof -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <link rel="stylesheet" href="style.css">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+
+    <style>
+       /* Efeito de Vidro para a Janela do Chat */
+.glass-effect {
+    background: rgba(23, 27, 38, 0.6); /* Fundo semi-transparente */
+    backdrop-filter: blur(15px); /* Efeito de desfoque para o "vidro" */
+    -webkit-backdrop-filter: blur(15px); /* Suporte para Safari */
+    border: 1px solid rgba(255, 255, 255, 0.1); /* Borda sutil */
+}
+
+/* Animação para a janela do chat deslizar para cima */
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-slideIn {
+    animation: slideIn 0.3s ease-out forwards;
+}
+
+/* Animação de digitação do bot */
+@keyframes bounce {
+    0%, 80%, 100% {
+        transform: scale(0);
+    }
+    40% {
+        transform: scale(1.0);
+    }
+}
+
+.animate-bounce {
+    animation: bounce 1.4s infinite ease-in-out both;
+}
+
+/* Animação para os posts aparecerem suavemente */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-fadeIn {
+    animation: fadeIn 0.5s ease-out forwards;
+}
+
+/* Estilos para os componentes do post (já que `renderPost` foi incluído) */
+.post-card {
+    background-color: #1c1f2a;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    border: 1px solid #2d313e;
+}
+
+.profile-pic {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: 2px solid #4a5568;
+}
+
+.online-indicator {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 12px;
+    height: 12px;
+    background-color: #38a169; /* Verde para online */
+    border-radius: 50%;
+    border: 2px solid #1c1f2a;
+}
+
+.offline-indicator {
+    background-color: #718096; /* Cinza para offline */
+}
+
+.reaction-btn:hover {
+    color: #f56565; /* Vermelho ao passar o mouse */
+}
+
+     *  {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Roboto', 'Poppins', sans-serif;
+        }
+        
+      body   {
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(-100%); }
+            to { transform: transform(0); }
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        .animate-fadeIn {
+            animation: fadeIn 0.5s ease-out;
+        }
+        
+        .animate-slideIn {
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        .animate-pulse-custom {
+            animation: pulse 2s infinite;
+        }
+        
+        /* Custom Styles */
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+        }
+        
+        .gradient-btn {
+            background: linear-gradient(45deg, #667eea 0%, #764ba2 100%);
+            transition: all 0.3s ease;
+        }
+        
+        .gradient-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -300px;
+            width: 300px;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(20px);
+            transition: left 0.3s ease;
+            z-index: 1000;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .sidebar.active {
+            left: 0;
+        }
+        
+        .online-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #00ff00;
+            position: absolute;
+            bottom: 2px;
+            right: 2px;
+            border: 2px solid #000;
+        }
+        
+        .offline-indicator {
+            background: #ff0000;
+        }
+        
+        .verified-badge {
+            width: 20px;
+            height: 20px;
+            background: #1da1f2;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: 5px;
+        }
+        
+        .post-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .post-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .reaction-btn {
+            transition: all 0.2s ease;
+        }
+        
+        .reaction-btn:hover {
+            transform: scale(1.2);
+        }
+        
+        .reaction-btn.active {
+            color: #ff6b6b;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .profile-pic {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #667eea;
+        }
+        
+        .balance-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .swiper-container {
+            width: 100%;
+            height: 300px;
+            margin-bottom: 20px;
+        }
+        
+        .swiper-slide {
+            text-align: center;
+            font-size: 18px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+   {
+  background-color: #0f0f1b;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.twitter-badge {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: radial-gradient(circle at center, #1d9bf0 0%, #0a5c9e 100%);
+  box-shadow: 0 0 25px #1d9bf0aa;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  transition: transform 0.3s ease;
+}
+
+.twitter-badge:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 30px #1d9bf0ee;
+}
+
+{
+  width: 100%;
+  height: 100%;
+}
+  /* CSS */
+.twitter-badge {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  background-color: #1D9BF0;
+  -webkit-mask: url('https://abs.twimg.com/responsive-web/client-web/icon_verified_account_blue_2021.svg') no-repeat center;
+  mask: url('https://abs.twimg.com/responsive-web/client-web/icon_verified_account_blue_2021.svg') no-repeat center;
+  -webkit-mask-size: cover;
+  mask-size: cover;
+  vertical-align: middle;
+  margin-left: 4px;
+}
+    </style>
+</head>
+<body>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/showdown/dist/showdown.min.js"></script>
+    <style>
+      *  {
+            font-family: 'Inter', sans-serif;
+            background-color: #000;
+            color: ;
+            -webkit-font-smoothing: ;
+            -moz-osx-font-smoothing: ;
+        }
+
+        {
+            display: none !important;
+        }
+
+        .magic-footer-btn.active svg {
+            fill: #e7e9ea;
+        }
+
+    {
+            font-weight: 70;
+        }
+
+        .modal-content {
+            animation: slide-up 0.3s ease-out;
+        }
+
+        @keyframes slide-up {
+            from {
+                transform: translateY(100%);
+            }
+            to {
+                transform: translateY(0);
+            }
+        }
+        
+        .notification-toast {
+            animation: slide-in-out 4s ease-in-out;
+        }
+
+       {
+            0% { transform: translateY(-100%); opacity: 0; }
+            15% { transform: translateY(0); opacity: 1; }
+            85% { transform: translateY(0); opacity: 1; }
+            100% { transform: translateY(-100%); opacity: 0; }
+        }
+  * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: linear-gradient(135deg, #000000 0%, #0d1117 50%, #000000 100%);
+  color: #ffffff;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+}
+
+ head{
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at 20% 30%, rgba(29, 161, 242, 0.1) 0%, transparent 50%),
+              radial-gradient(circle at 80% 70%, rgba(138, 43, 226, 0.08) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+ head{
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8);
+}
+
+ head,input{
+  background: linear-gradient(45deg, #000000, #1a1a1a);
+  padding: 25px;
+  border-radius: 15px;
+  margin-bottom: 30px;
+  border: 1px solid rgba(29, 161, 242, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+bar {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: conic-gradient(from 0deg, transparent, rgba(29, 161, 242, 0.1), transparent);
+  animation: rotate 10s linear infinite;
+}
+
+body {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+ {
+  font-size: 2.5rem;
+  background: linear-gradient(45deg, #1da1f2, #8a2be2, #ffffff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-align: center;
+  position: relative;
+  z-index: 2;
+  text-shadow: 0 0 20px rgba(29, 161, 242, 0.5);
+}
+
+head{
+  background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  padding: 25px;
+  margin: 20px 0;
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  position: relative;
+  overflow: hidden;
+}
+
+head{
+  content: '';
+  position: fixed;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(29, 161, 242, 0.1), transparent);
+  transition: left 0.6s ease;
+}
+@keyframes pulse {
+  0% { box-shadow: 0 0 20px rgba(29, 161, 242, 0.4); }
+  50% { box-shadow: 0 0 30px rgba(29, 161, 242, 0.8); }
+  100% { box-shadow: 0 0 20px rgba(29, 161, 242, 0.4); }
+}
+
+.username {
+  font-weight: bold;
+  color: #ffffff;
+  font-size: 1.1rem;
+}
+
+{
+  color: #8899a6;
+  margin-left: 10px;
+}
+ {
+  color: #ffffff;
+  line-height: 1.6;
+  margin: 15px 0;
+  font-size: 1.1rem;
+}
+
+ {
+  display: flex;
+  justify-content: space-around;
+  padding-top: 15px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+{
+  background: transparent;
+  border: none;
+  color: #8899a6;
+  cursor: pointer;
+  padding: 10px 15px;
+  border-radius: 20px;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+ {
+  background: rgba(29, 161, 242, 0.1);
+  color: #1da1f2;
+  transform: scale(1.1);
+}
+
+ {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: -1;
+}
+
+ {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: rgba(29, 161, 242, 0.6);
+  border-radius: 50%;
+  animation: float 6s ease-in-out infinite;
+}
+
+      {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+ {
+  background-color: #111;
+  color: #fff;
+  font-family: 'Segoe UI', sans-serif;
+  display: flex;
+  justify-content: center;
+}
+
+ {
+  width: 76%;
+  max-width: 1200px;
+  min-width: 320px;
+  margin: 40px auto;
+  padding: 20px;
+  background-color: #1c1c1c;
+  border-radius: 12px;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.5);
+}
+
+/* Responsividade extra para telas muito pequenas */
+@media (max-width: 4px) {
+ body {
+    width: 10%;
+    
+  }
+}
+       
+/*
+ * ===============================================
+ * Twilight CSS - Inspirado no tema escuro do X.com
+ * ===============================================
+ */
+
+/* * ---- Definições de Cores e Fontes (Variáveis CSS) ----
+ * Estas são as cores principais do tema "Twilight".
+ */
+:root,body {
+    --x-cor-fundo: #000000;
+    --x-cor-texto-principal: #E7E9EA;
+    --x-cor-texto-secundario: #71767B;
+    --x-cor-acento-azul: #1D9BF0;
+    --x-cor-borda: #2F3336;
+    --x-cor-botao-fundo: #EFF3F4;
+    --x-cor-botao-texto: #0F1419;
+    --x-cor-hover: rgba(239, 243, 244, 0.1);
+    --x-fonte-padrao: "TwitterChirp", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* ---- Estilos Gerais do Corpo da Página ---- */
+body {
+    background-color: var(--x-cor-fundo);
+    color: var(--x-cor-texto-principal);
+    font-family: var(--x-fonte-padrao);
+    margin: 0;
+}
+
+/* ---- Cabeçalho e Abas de Navegação ("For you", "Following") ---- */
+header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 16px;
+    border-bottom: 1px solid var(--x-cor-borda);
+}
+
+logo {
+    /* Estilo para o logo do X */
+    font-size: 28px;
+    font-weight: 800;
+}
+
+.botao-premium {
+    background-color: var(--x-cor-botao-fundo);
+    color: var(--x-cor-botao-texto);
+    border: none;
+    border-radius: 9999px;
+    padding: 6px 16px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.navegacao-abas {
+    display: flex;
+    border-bottom: 1px solid var(--x-cor-borda);
+}
+
+.aba,header {
+    flex-grow: 1;
+    text-align: center;
+    padding: 16px;
+    font-weight: 500;
+    color: var(--x-cor-texto-secundario);
+    cursor: pointer;
+    position: relative;
+}
+
+.aba:hover {
+    background-color: var(--x-cor-hover);
+}
+
+.aba.ativa {
+    color: var(--x-cor-texto-principal);
+    font-weight: bold;
+}
+
+/* Linha azul abaixo da aba ativa */
+.aba.ativa::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 56px;
+    height: 4px;
+    background-color: var(--x-cor-acento-azul);
+    border-radius: 9999px;
+}
+
+/* ---- Módulo "Earn on X" ---- */
+.modulo-info {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--x-cor-borda);
+}
+
+.modulo-info h2 {
+    font-size: 20px;
+    font-weight: 800;
+    margin: 0 0 4px 0;
+}
+
+.modulo-info p {
+    font-size: 14px;
+    color: var(--x-cor-texto-secundario);
+    line-height: 1.3;
+    margin: 0 0 12px 0;
+}
+
+.botao-subscribe {
+    background-color: var(--x-cor-botao-fundo);
+    color: var(--x-cor-botao-texto);
+    border: none;
+    border-radius: 9999px;
+    padding: 8px 18px;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+/* ---- Estilo do Post/Tweet ---- */
+.post-container {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--x-cor-borda);
+    display: flex;
+    line-height: 1.5;
+}
+
+.post-avatar {
+    margin-right: 12px;
+}
+
+.post-avatar img {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+}
+
+.post-conteudo .cabecalho {
+    font-size: 15px;
+}
+
+.post-conteudo .nome-perfil {
+    font-weight: bold;
+}
+
+.post-conteudo .selo-verificado {
+    color: var(--x-cor-acento-azul);
+    display: inline-block;
+    width: 18px; /* Simula o ícone */
+    height: 18px; /* Simula o ícone */
+}
+
+.post-conteudo .username,
+.post-conteudo .etiqueta-ad {
+    color: var(--x-cor-texto-secundario);
+    margin-left: 4px;
+}
+
+.post-conteudo .corpo-texto {
+    font-size: 15px;
+    margin-top: 4px;
+}
+
+/* ---- Botão Flutuante e Barra de Navegação Inferior ---- */
+.botao-flutuante,sidebar {
+    position: fixed;
+    bottom: 70px;
+    right: 20px;
+    width: 56px;
+    height: 56px;
+    background-color: var(--x-cor-acento-azul);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: 24px; /* Tamanho do ícone de "+" ou pena */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    cursor: pointer;
+}
+
+.barra-navegacao-inferior,sidebar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: var(--x-cor-fundo);
+    border-top: 1px solid var(--x-cor-borda);
+    display: flex;
+    justify-content: space-around;
+    padding-top: 4px;
+    padding-bottom: 4px;
+}
+
+.icone-nav,header{
+    font-size: 26px; /* Tamanho dos ícones */
+    padding: 8px;
+    position: relative;
+}
+
+/* Ponto de notificação azul */
+.icone-nav.com-notificacao::before{
+    content: '';
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 8px;
+    height: 8px;
+    background-color: var(--x-cor-acento-azul);
+    border: 2px solid var(--x-cor-fundo);
+    border-radius: 50%;
+}
+
+/*
+ * =======================================================
+ * CSS para replicar a tela de login do X.com
+ * =======================================================
+ */
+
+/* ---- Estilos Gerais ---- */
+body {
+    background-color: #000000; /* Fundo preto */
+    color: #e7e9ea;            /* Cor do texto principal (branco suave) */
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+}
+
+/* ---- Container Principal ---- */
+#authScreen .max-w-md {
+    max-width: 364px; /* Largura do container de login do X */
+    width: 100%;
+}
+
+/* Remove os estilos pré-existentes do seu HTML */
+#authScreen .glass-effect {
+    background: none;
+    backdrop-filter: none;
+    border: none;
+    padding: 0;
+}
+
+/* ---- Tipografia ---- */
+/* "Acontecendo agora" */
+h2.main-title {
+    font-size: 40px; /* Tamanho grande para o título principal */
+    font-weight: 800;
+    line-height: 1.2;
+    margin-bottom: 32px;
+}
+
+/* "Inscreva-se hoje" */
+h3.subtitle {
+    font-size: 23px; /* Tamanho para o subtítulo */
+    font-weight: 700;
+    margin-bottom: 24px;
+}
+
+/* ---- Botões ---- */
+.auth-button {
+    width: 100%;
+    padding: 10px 0;
+    margin-bottom: 12px;
+    border-radius: 9999px; /* Bordas totalmente arredondadas */
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: background-color 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Botão "Fazer login como Isaac" e "Inscrever-se com Apple" */
+.btn-secondary {
+    background-color: #ffffff;
+    color: #0f1419; /* Preto */
+    border-color: #cfd9de;
+}
+
+.btn-secondary:hover {
+    background-color: #f2f2f2; /* Leve escurecimento ao passar o mouse */
+}
+
+/* Ícones dentro dos botões (Google, Apple) */
+.btn-secondary img, .btn-secondary .icon {
+    width: 20px;
+    height: 20px;
+    margin-right: 8px;
+}
+
+/* Botão "Criar conta" (Azul) */
+.btn-primary {
+    background-color: #1d9bf0;
+    color: #ffffff;
+    border: none;
+}
+
+.btn-primary:hover {
+    background-color: #1a8cd8; /* Azul um pouco mais escuro */
+}
+
+/* Botão "Entrar" e "Baixar" (Borda branca) */
+.btn-outline {
+    background-color: transparent;
+    color: #1d9bf0; /* Azul */
+    border: 1px solid #536471; /* Cinza da borda */
+}
+
+.btn-outline:hover {
+    background-color: rgba(29, 155, 240, 0.1); /* Fundo azul transparente */
+}
+
+/* ---- Seção "Já tem uma conta?" ---- */
+.login-section {
+    margin-top: 40px;
+}
+
+.login-section h3 {
+    font-size: 17px;
+    font-weight: 700;
+    margin-bottom: 16px;
+}
+
+
+/* ---- Linha "OU" ---- */
+.divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    color: #71767b;
+    margin: 12px 0;
+}
+
+.divider::before,
+.divider::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid #2f3336;
+}
+
+.divider:not(:empty)::before {
+    margin-right: .5em;
+}
+
+.divider:not(:empty)::after {
+    margin-left: .5em;
+}
+
+/* ---- Links de Texto ---- */
+.text-link {
+    font-size: 13px;
+    color: #71767b; /* Cinza */
+}
+
+.text-link a {
+    color: #1d9bf0; /* Azul */
+    text-decoration: none;
+}
+
+.text-link a:hover {
+    text-decoration: underline;
+}
+       /*
+ * ============================================
+ * CSS - SEÇÃO DE AMIGOS (Estilo X.com)
+ * ============================================
+ */
+
+#friendsSection {
+    background-color: #16181c; /* Fundo um pouco diferente, como na aba "Comunidades" */
+    border-radius: 16px;
+    margin: 16px auto; /* Adiciona margem em volta */
+    padding: 12px 0;
+}
+
+#friendsSection h2 {
+    font-size: 20px;
+    font-weight: 800;
+    color: #e7e9ea;
+    padding: 0 16px 12px; /* Espaçamento do título */
+}
+
+.friend-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    transition: background-color 0.2s;
+}
+
+.friend-item:hover {
+    background-color: rgba(255, 255, 255, 0.03);
+}
+
+.friend-info {
+    display: flex;
+    align-items: center;
+}
+
+.friend-info img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 12px;
+}
+
+.friend-info .display-name {
+    font-weight: bold;
+    color: #e7e9ea;
+}
+
+.friend-info .username {
+    color: #71767b;
+    font-size: 15px;
+}
+
+.follow-btn {
+    background-color: #eff3f4; /* Botão branco */
+    color: #0f1419; /* Texto preto */
+    border: none;
+    border-radius: 9999px;
+    padding: 8px 16px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+/*
+ * =========================================
+ * CSS - SEÇÃO DO FEED (Estilo X.com)
+ * =========================================
+ */
+
+/* ---- Caixa "Criar Post" ---- */
+#feedSection .glass-effect {
+    background-color: #000000;
+    padding: 16px;
+    border-bottom: 1px solid #2f3336;
+    margin-bottom: 0; /* Remove margem para se conectar ao feed */
+}
+
+#feedSection h3 {
+    display: none; /* O design do X não tem o título "Criar Post" */
+}
+
+#postContent {
+    background-color: transparent;
+    border: none;
+    color: #e7e9ea;
+    font-size: 20px;
+    padding: 12px 0;
+    resize: none;
+    outline: none; /* Remove a borda ao focar */
+}
+
+#postContent::placeholder {
+    color: #71767b;
+}
+
+.post-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 12px;
+}
+
+.post-actions .media-buttons button {
+    color: #1d9bf0;
+    margin-right: 12px;
+    font-size: 20px;
+}
+
+.publish-btn {
+    background-color: #1d9bf0;
+    color: #ffffff;
+    border-radius: 9999px;
+    padding: 8px 18px;
+    font-size: 15px;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    opacity: 0.7; /* Botão fica mais claro quando desabilitado */
+}
+
+.publish-btn.enabled {
+    opacity: 1;
+}
+
+
+/* ---- Estilo de um Post Individual ---- */
+.post {
+    display: flex;
+    padding: 12px 16px;
+    border-bottom: 1px solid #2f3336;
+    background-color: #000000;
+}
+
+.post-avatar {
+    margin-right: 12px;
+}
+
+.post-avatar img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+
+.post-body .post-header {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.post-header .display-name {
+    font-weight: bold;
+    color: #e7e9ea;
+}
+
+.post-header .username, .post-header .post-time {
+    color: #71767b;
+}
+
+.post-content {
+    color: #e7e9ea;
+    margin-top: 4px;
+    line-height: 1.4;
+}
+
+.post-image-container img {
+    width: 100%;
+    margin-top: 12px;
+    border-radius: 16px;
+    border: 1px solid #2f3336;
+}
+
+.post-footer {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 12px;
+    color: #71767b;
+    font-size: 18px;
+}
+
+/*
+ * =========================================
+ * CSS - SEÇÃO DE PERFIL (Estilo X.com)
+ * =========================================
+ */
+
+/* Remove estilos de base do seu HTML para um controle total */
+#profileSection, #feedSection, #friendsSection, container mx-auto px-4 py-8 hidden {
+    padding: 0;
+    max-width: 600px; /* Largura padrão da coluna central do X */
+    margin: 0 auto;
+}
+#profileSection .glass-effect {
+    background: none;
+    padding: 0;
+}
+
+/* ---- Cabeçalho e Imagem de Capa ---- */
+.profile-header {
+    position: relative;
+    border-bottom: 1px solid #2f3336; /* Cor da borda */
+}
+
+.profile-cover-photo {
+    width: 100%;
+    height: 200px;
+    background-color: #333639; /* Cor de placeholder para a capa */
+    object-fit: cover;
+}
+
+/* ---- Foto de Perfil e Botão de Edição ---- */
+.profile-details-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 0 16px;
+}
+
+.profile-pic-container {
+    margin-top: -60px; /* Faz a foto de perfil sobrepor a capa */
+    position: relative;
+}
+
+#profilePagePic {
+    width: 120px;
+    height: 120px;
+    border-radius: 9999px;
+    border: 4px solid #000000; /* Borda preta em volta da foto */
+    background-color: #1a1a1a;
+}
+
+.edit-profile-btn {
+    margin-top: 12px;
+    background-color: transparent;
+    color: #e7e9ea; /* Branco suave */
+    border: 1px solid #536471;
+    border-radius: 9999px;
+    padding: 8px 16px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.edit-profile-btn:hover {
+    background-color: rgba(231, 233, 234, 0.1);
+}
+
+/* ---- Informações do Usuário ---- */
+.user-info {
+    padding: 12px 16px;
+}
+
+#profilePageName {
+    font-size: 20px;
+    font-weight: 800;
+    color: #e7e9ea;
+}
+
+.user-info .username,
+.user-info .join-date {
+    color: #71767b; /* Cinza secundário */
+    font-size: 15px;
+    margin-top: 4px;
+}
+
+/* ---- Estatísticas (Seguindo/Seguidores) ---- */
+.user-stats {
+    display: flex;
+    gap: 20px;
+    padding: 0 16px 12px;
+    font-size: 14px;
+}
+
+.user-stats .stat-value {
+    color: #e7e9ea;
+    font-weight: bold;
+}
+
+.user-stats .stat-label {
+    color: #71767b;
+}
+
+/* ---- Banner "You aren't verified yet" ---- */
+.verification-banner {
+    background-color: #081a29; /* Fundo azul escuro */
+    border: 1px solid #103c5c;
+    border-radius: 16px;
+    padding: 16px;
+    margin: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.verification-banner p {
+    color: #e7e9ea;
+    font-size: 15px;
+    line-height: 1.3;
+    font-weight: 500;
+    margin: 0;
+}
+
+.get-verified-btn {
+    background-color: #1d9bf0; /* Azul */
+    color: #ffffff;
+    border-radius: 9999px;
+    padding: 8px 16px;
+    font-size: 14px;
+    font-weight: bold;
+    white-space: nowrap;
+    cursor: pointer;
+    border: none;
+    margin-left: 16px;
+}
+
+/* ---- Abas de Navegação do Perfil ---- */
+.profile-tabs {
+    display: flex;
+    justify-content: space-around;
+    border-bottom: 1px solid #2f3336;
+}
+
+.profile-tab {
+    flex-grow: 1;
+    text-align: center;
+    padding: 16px;
+    color: #71767b;
+    font-weight: 500;
+    cursor: pointer;
+    position: relative;
+}
+
+.profile-tab.active {
+    color: #e7e9ea;
+    font-weight: bold;
+}
+
+.profile-tab.active::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 56px;
+    height: 4px;
+    background-color: #1d9bf0;
+    border-radius: 9999px;
+}
+
+       
+    </style>
+</head>
+
+       <!-- Sidebar -->
+    <div id="sidebar" class="sidebar">
+        <div class="p-6">
+            <div class="flex items-center mb-6">
+                <div class="relative">
+                    <img id="sidebarProfilePic" src="https://via.placeholder.com/60" alt="Profile" class="w-16 h-16 rounded-full border-2 border-blue-500">
+                    <div id="sidebarOnlineStatus" class="online-indicator"></div>
+                </div>
+                <div class="ml-3">
+                    <h3 id="sidebarUserName" class="text-white font-semibold">Usuário</h3>
+                    <p class="text-gray-300 text-sm">@usuario</p>
+                </div>
+            </div>
+            
+            <div class="balance-card">
+                <h4 class="text-white font-semibold mb-2">Carteira</h4>
+                <p class="text-2xl font-bold text-white">100 KZ</p>
+                <div class="mt-4 space-y-2">
+                    <button class="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition">
+                        <i class="fas fa-plus mr-2"></i>Depósito
+                    </button>
+                    <button class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition">
+                        <i class="fas fa-credit-card mr-2"></i>Cartão Bank
+                    </button>
+                    <button class="w-full bg-purple-600 text-white py-2 rounded-lg hover:bg-purple-700 transition">
+                        <i class="fas fa-envelope mr-2"></i>Transferir por E-mail
+                    </button>
+                </div>
+            </div>
+            
+            <div class="space-y-4">
+                <button class="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition">
+                  <i <svg viewBox="0 0 24 24" aria-label="Verified account" role="img" class="r-1cvl2hr r-4qtqp9 r-yyyyoo r-18kxxzh r-dnmrzs r-bnwqim r-1plcrui r-lrvibr">
+  <g>
+    <path d="M22.25 12c0-1.43-.88-2.67-2.19-3.34.46-1.39.2-2.9-.81-3.91s-2.52-1.27-3.91-.81c-.66-1.31-1.91-2.19-3.34-2.19s-2.67.88-3.33 2.19c-1.4-.46-2.91-.2-3.92.81s-1.26 2.52-.8 3.91c-1.31.67-2.2 1.91-2.2 3.34s.89 2.67 2.2 3.34c-.46 1.39-.21 2.9.8 3.91s2.52 1.26 3.91.81c.67 1.31 1.91 2.19 3.34 2.19s2.68-.88 3.34-2.19c1.39.45 2.9.2 3.91-.81s1.27-2.52.81-3.91c1.31-.67 2.19-1.91 2.19-3.34zm-11.48-2.97c.3-.3.77-.3 1.07 0l2.44 2.44c.15.15.22.35.22.53s-.07.38-.22.53l-4.98 4.98c-.15.15-.35.22-.53.22s-.38-.07-.53-.22l-2.47-2.47c-.3-.3-.3-.77 0-1.07s.77-.3 1.07 0l1.9 1.9 4.4-4.4z"></path>
+  </g>
+</svg></i>
+Pedir Verificação
+                </button>
+                   <button onclick="changeProfilePicWithLinkAdvanced()" class="w-full bg-gray-600 text-white py-3 rounded-lg hover:bg-gray-700 transition">
+    <i class="fas fa-link mr-2"></i>Trocar Foto (Link Imgur)
+</button>
+
+                <button onclick="changeProfilePic()" class="w-full bg-gray-600 text-white py-3 rounded-lg hover:bg-gray-700 transition">
+                    <i class="fas fa-camera mr-2"></i>Trocar Foto de Perfil
+                </button>
+                <div class="flex items-center justify-between">
+                    <span class="text-white">Status Online</span>
+                    <button id="toggleOnlineStatus" onclick="toggleOnlineStatus()" class="bg-green-500 text-white px-4 py-2 rounded-lg">
+                        <i class="fas fa-power-off"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="min-h-screen">
+        <!-- Header -->
+        <header class="glass-effect p-4 sticky top-0 z-50">
+            <div class="container flex items-center justify-between">
+                <div class="flex items-center">
+                    <button id="sidebarToggle" class="text-white text-xl mr-4">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h1 class="text-2xl font-bold text-white">American Dev</h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="relative">
+                        <img id="headerProfilePic" src="https://via.placeholder.com/40" alt="Profile" class="profile-pic w-10 h-10">
+                        <div id="headerOnlineStatus" class="online-indicator"></div>
+                    </div>
+                </div>
+            </div>
+        </header>
+        
+        <!-- Login/Register Screen -->
+        <div id="authScreen" class="container mx-auto px-4 py-20">
+            <div class="max-w-md mx-auto glass-effect p-8 animate-fadeIn">
+                <h2 class="text-3xl font-bold text-center mb-8 text-white">Bem-vindo ao American Dev</h2>
+                
+                <!-- Login Form -->
+                <div id="loginForm" class="space-y-6">
+                    <div>
+                        <label class="block text-white mb-2">Email</label>
+                        <input type="email" id="loginEmail" class="w-full p-3 rounded-lg bg-gray-800 text-white border border-gray-600 focus:border-blue-500" placeholder="seu@email.com">
+                    </div>
+                    <div>
+                        <label class="block text-white mb-2">Senha</label>
+                        <input type="password" id="loginPassword" class="w-full p-3 rounded-lg bg-gray-800 text-white border border-gray-600 focus:border-blue-500" placeholder="Sua senha">
+                    </div>
+                    <button onclick="login()" class="w-full gradient-btn text-white py-3 rounded-lg font-semibold">
+                        Entrar
+                    </button>
+                    <p class="text-center text-gray-300">
+                        Não tem conta? <button onclick="showRegister()" class="text-blue-400 hover:underline">Registre-se</button>
+                    </p>
+                </div>
+                
+                <!-- Register Form -->
+                <div id="registerForm" class="space-y-6 hidden">
+                    <div>
+                        <label class="block text-white mb-2">Nome Completo</label>
+                        <input type="text" id="registerName" class="w-full p-3 rounded-lg bg-gray-800 text-white border border-gray-600 focus:border-blue-500" placeholder="Seu nome completo">
+                    </div>
+                    <div>
+                        <label class="block text-white mb-2">Email</label>
+                        <input type="email" id="registerEmail" class="w-full p-3 rounded-lg bg-gray-800 text-white border border-gray-600 focus:border-blue-500" placeholder="seu@email.com">
+                    </div>
+                    <div>
+                        <label class="block text-white mb-2">Senha</label>
+                        <input type="password" id="registerPassword" class="w-full p-3 rounded-lg bg-gray-800 text-white border border-gray-600 focus:border-blue-500" placeholder="Sua senha">
+                    </div>
+                    <div class="text-center">
+                        <img id="customRegisterImage" src="https://via.placeholder.com/150" alt="Imagem Personalizada" class="w-32 h-32 mx-auto rounded-lg border-2 border-blue-500 mb-4">
+                        <p class="text-gray-300 text-sm">Imagem personalizada do American Dev</p>
+                    </div>
+                    <button onclick="register()" class="w-full gradient-btn text-white py-3 rounded-lg font-semibold">
+                        Registrar
+                    </button>
+                    <p class="text-center text-gray-300">
+                        Já tem conta? <button onclick="showLogin()" class="text-blue-400 hover:underline">Faça login</button>
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Profile Picture Setup -->
+        <div id="profileSetup" class="container mx-auto px-4 py-20 hidden">
+            <div class="max-w-md mx-auto glass-effect p-8 animate-fadeIn">
+                <h2 class="text-2xl font-bold text-center mb-8 text-white">Configure sua Foto de Perfil</h2>
+                <div class="text-center mb-6">
+                    <div class="relative inline-block">
+                        <img id="profilePreview" src="https://imgur.com/702jMhU.jpg" alt="Preview" class="w-32 h-32 rounded-full border-4 border-blue-500 mx-auto">
+                        <button onclick="selectProfilePic()" class="absolute bottom-0 right-0 bg-blue-500 text-white p-2 rounded-full hover:bg-blue-600 transition">
+                            <i class="fas fa-camera"></i>
+                        </button>
+                    </div>
+                </div>
+                <input type="file" id="profilePicInput" accept="image/*" class="hidden">
+                <div class="space-y-4">
+                    <button onclick="selectProfilePic()" class="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition">
+                        <i class="fas fa-camera mr-2"></i>Escolher Foto
+                    </button>
+                    <button onclick="skipProfilePic()" class="w-full bg-gray-600 text-white py-3 rounded-lg hover:bg-gray-700 transition">
+                        Pular por Agora
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Main App -->
+        <div id="mainApp" class="hidden">
+            <!-- Navigation -->
+            <nav class="container mx-auto px-4 py-4">
+                <div class="flex justify-center space-x-8">
+                    <button onclick="showFeed()" id="feedBtn" class="text-blue-400 border-b-2 border-blue-400 pb-2 px-4 font-semibold">
+                        <i class="fas fa-home mr-2"></i>Feed
+                    </button>
+                    <button onclick="showFriends()" id="friendsBtn" class="text-gray-400 hover:text-white pb-2 px-4 font-semibold transition">
+                        <i class="fas fa-users mr-2"></i>Amigos
+                    </button>
+                    <button onclick="showProfile()" id="profileBtn" class="text-gray-400 hover:text-white pb-2 px-4 font-semibold transition">
+                        <i class="fas fa-user mr-2"></i>Perfil
+                    </button>
+                </div>
+            </nav>
+            
+            <!-- Feed Section -->
+            <div id="feedSection" class="container mx-auto px-4 py-8">
+                <!-- Post Creation -->
+                <div class="glass-effect p-6 mb-8 animate-fadeIn">
+                    <h3 class="text-xl font-semibold mb-4 text-white">Criar Post</h3>
+                    <textarea id="postContent" placeholder="O que está acontecendo?" class="w-full p-4 bg-gray-800 text-white rounded-lg border border-gray-600 focus:border-blue-500 resize-none" rows="3"></textarea>
+                    <div class="flex justify-between items-center mt-4">
+                        <div class="flex space-x-2">
+                            <button class="text-blue-400 hover:text-blue-300 transition">
+                                <i class="fas fa-image text-xl"></i>
+                            </button>
+                            <button class="text-green-400 hover:text-green-300 transition">
+                                <i class="fas fa-video text-xl"></i>
+                            </button>
+                        </div>
+                        <button onclick="createPost()" class="gradient-btn text-white px-6 py-2 rounded-lg font-semibold">
+                            Publicar
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Posts Feed -->
+                <div id="postsContainer">
+                    <!-- Posts will be loaded here -->
+                </div>
+            </div>
+            
+            <!-- Friends Section -->
+            <div id="friendsSection" class="container mx-auto px-4 py-8 hidden">
+                <h2 class="text-2xl font-bold mb-6 text-white">Amigos Locais</h2>
+                <div id="friendsList" class="space-y-4">
+                       
+                    <!-- Friends will be loaded here -->
+                </div>
+            </div>
+            
+            <!-- Profile Section -->
+            <div id="profileSection" class="container mx-auto px-4 py-8 hidden">
+                <div class="glass-effect p-8 animate-fadeIn">
+                    <div class="flex items-center mb-6">
+                        <div class="relative">
+                            <img id="profilePagePic" src="https://via.placeholder.com/100" alt="Profile" class="w-24 h-24 rounded-full border-4 border-blue-500">
+                            <div id="profileOnlineStatus" class="online-indicator" style="width: 20px; height: 20px; bottom: 5px; right: 5px;"></div>
+                        </div>
+                        <div class="ml-6">
+                            <h2 id="profilePageName" class="text-2xl font-bold text-white">
+                                Nome do Usuário
+                                <span class="verified-badge">
+                                    <i class="fas fa-check text-white text-xs"></i>
+                                </span>
+                            </h2>
+                            <p class="text-gray-300">@usuario</p>
+                            <p class="text-gray-400 mt-2">Membro desde: <span id="memberSince"></span></p>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-blue-400">0</div>
+                            <div class="text-gray-300">Posts</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-green-400">0</div>
+                            <div class="text-gray-300">Amigos</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-purple-400">0</div>
+                            <div class="text-gray-300">Curtidas</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<script>
+// Configuração do Bot
+const BOT_EMAIL = 'isaacmub82@gmail.com';
+const GEMINI_API_KEY = 'AIzaSyDaU-2y8u-94gCDghFfL83gm1lFqB0l7Cs';
+const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent';
+
+let botActive = false;
+let chatOpen = false;
+
+// Função para criar o botão do chat bot
+function createChatBotButton() {
+    const chatButton = document.createElement('div');
+    chatButton.id = 'chatBotButton';
+    chatButton.className = 'fixed bottom-6 right-6 w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center cursor-pointer shadow-lg hover:shadow-xl transform hover:scale-110 transition-all duration-300 z-50';
+    chatButton.innerHTML = `
+        <div class="relative">
+            <i class="fas fa-robot text-white text-2xl"></i>
+            <div id="botStatusIndicator" class="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-white ${botActive ? '' : 'bg-gray-500'}"></div>
+        </div>
+    `;
+    
+    chatButton.addEventListener('click', toggleChat);
+    document.body.appendChild(chatButton);
+}
+
+// Função para criar a janela do chat
+function createChatWindow() {
+    const chatWindow = document.createElement('div');
+    chatWindow.id = 'chatWindow';
+    chatWindow.className = 'fixed bottom-24 right-6 w-80 h-96 glass-effect rounded-lg shadow-2xl z-50 hidden animate-slideIn';
+    chatWindow.innerHTML = `
+        <div class="flex flex-col h-full">
+            <!-- Header do Chat -->
+            <div class="flex items-center justify-between p-4 border-b border-gray-600">
+                <div class="flex items-center space-x-3">
+                    <div class="relative">
+                        <img src="https://via.placeholder.com/40/4F46E5/ffffff?text=🤖" alt="Bot" class="w-10 h-10 rounded-full">
+                        <div class="absolute -bottom-1 -right-1 w-4 h-4 bg-blue-500 rounded-full border-2 border-white flex items-center justify-center">
+                            <svg viewBox="0 0 22 22" class="w-3 h-3 text-white" fill="currentColor">
+                                <path d="M22.25 12c0-1.43-.88-2.67-2.19-3.34.46-1.39.2-2.9-.81-3.91s-2.52-1.27-3.91-.81c-.67-1.31-1.91-2.19-3.34-2.19s-2.67.88-3.33 2.19c-1.4-.46-2.91-.2-3.92.81s-1.27 2.52-.8 3.91c-1.31.67-2.2 1.91-2.2 3.34s.89 2.67 2.2 3.33c-.47 1.39-.2 2.9.8 3.92s2.52 1.27 3.91.81c.67 1.31 1.91 2.19 3.34 2.19s2.67-.88 3.33-2.19c1.4.46 2.91.2 3.92-.81s1.27-2.52.81-3.91c1.31-.67 2.19-1.91 2.19-3.34zm-11.5 4.88L6.41 12.5l1.41-1.41L10.75 14.07l5.42-5.42 1.41 1.41-6.83 6.82z"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="text-white font-semibold">Isaac Bot</h3>
+                        <p class="text-gray-400 text-xs">Assistente IA</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <button id="toggleBotActive" onclick="toggleBotActive()" class="px-3 py-1 rounded-full text-xs font-semibold transition ${botActive ? 'bg-green-500 text-white' : 'bg-gray-500 text-white'}">
+                        ${botActive ? 'Ativo' : 'Inativo'}
+                    </button>
+                    <button onclick="toggleChat()" class="text-gray-400 hover:text-white transition">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Mensagens do Chat -->
+            <div id="chatMessages" class="flex-1 overflow-y-auto p-4 space-y-3">
+                <div class="flex items-start space-x-2">
+                    <img src="https://via.placeholder.com/32/4F46E5/ffffff?text=🤖" alt="Bot" class="w-8 h-8 rounded-full">
+                    <div class="bg-blue-600 text-white p-3 rounded-lg max-w-xs">
+                        <p class="text-sm">Olá! Eu sou o Isaac Bot, seu assistente IA. Como posso te ajudar?</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Input do Chat -->
+            <div class="p-4 border-t border-gray-600">
+                <div class="flex space-x-2">
+                    <input type="text" id="chatInput" placeholder="Digite sua mensagem..." class="flex-1 p-2 bg-gray-800 text-white rounded-lg border border-gray-600 focus:border-blue-500 text-sm">
+                    <button onclick="sendMessage()" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(chatWindow);
+    
+    // Adicionar evento de Enter no input
+    document.getElementById('chatInput').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            sendMessage();
+        }
+    });
+}
+
+// Função para alternar o chat
+function toggleChat() {
+    const chatWindow = document.getElementById('chatWindow');
+    if (chatWindow.classList.contains('hidden')) {
+        chatWindow.classList.remove('hidden');
+        chatOpen = true;
+    } else {
+        chatWindow.classList.add('hidden');
+        chatOpen = false;
+    }
+}
+
+// Função para alternar o status do bot
+function toggleBotActive() {
+    botActive = !botActive;
+    
+    const statusIndicator = document.getElementById('botStatusIndicator');
+    const toggleButton = document.getElementById('toggleBotActive');
+    
+    if (botActive) {
+        statusIndicator.className = 'absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-white';
+        toggleButton.className = 'px-3 py-1 rounded-full text-xs font-semibold transition bg-green-500 text-white';
+        toggleButton.textContent = 'Ativo';
+    } else {
+        statusIndicator.className = 'absolute -top-1 -right-1 w-4 h-4 bg-gray-500 rounded-full border-2 border-white';
+        toggleButton.className = 'px-3 py-1 rounded-full text-xs font-semibold transition bg-gray-500 text-white';
+        toggleButton.textContent = 'Inativo';
+    }
+    
+    // Salvar estado no localStorage
+    localStorage.setItem('botActive', botActive);
+}
+
+// Função para enviar mensagem
+function sendMessage() {
+    const input = document.getElementById('chatInput');
+    const message = input.value.trim();
+    
+    if (!message) return;
+    
+    // Adicionar mensagem do usuário
+    addMessageToChat('user', message);
+    input.value = '';
+    
+    // Se o bot estiver ativo, enviar para Gemini
+    if (botActive) {
+        sendToGemini(message);
+    } else {
+        // Resposta automática quando inativo
+        setTimeout(() => {
+            addMessageToChat('bot', 'Desculpe, estou inativo no momento. Ative-me para conversar!');
+        }, 1000);
+    }
+}
+
+// Função para adicionar mensagem ao chat
+function addMessageToChat(sender, message) {
+    const messagesContainer = document.getElementById('chatMessages');
+    const messageDiv = document.createElement('div');
+    
+    if (sender === 'user') {
+        messageDiv.className = 'flex items-start space-x-2 justify-end';
+        messageDiv.innerHTML = `
+            <div class="bg-gray-700 text-white p-3 rounded-lg max-w-xs">
+                <p class="text-sm">${message}</p>
+            </div>
+            <img src="${document.getElementById('headerProfilePic').src}" alt="User" class="w-8 h-8 rounded-full">
+        `;
+    } else {
+        messageDiv.className = 'flex items-start space-x-2';
+        messageDiv.innerHTML = `
+            <img src="https://via.placeholder.com/32/4F46E5/ffffff?text=🤖" alt="Bot" class="w-8 h-8 rounded-full">
+            <div class="bg-blue-600 text-white p-3 rounded-lg max-w-xs">
+                <p class="text-sm">${message}</p>
+            </div>
+        `;
+    }
+    
+    messagesContainer.appendChild(messageDiv);
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+}
+
+// Função para enviar mensagem para Gemini
+async function sendToGemini(message) {
+    try {
+        // Mostrar indicador de digitando
+        addTypingIndicator();
+        
+        const response = await fetch(`${GEMINI_API_URL}?key=${GEMINI_API_KEY}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                contents: [{
+                    parts: [{
+                        text: `Você é Isaac Bot, um assistente IA do American Dev, uma rede social para desenvolvedores. Responda de forma amigável e útil sobre desenvolvimento web, programação e tecnologia. Mensagem: ${message}`
+                    }]
+                }]
+            })
+        });
+        
+        const data = await response.json();
+        
+        // Remover indicador de digitando
+        removeTypingIndicator();
+        
+        if (data.candidates && data.candidates[0] && data.candidates[0].content) {
+            const botResponse = data.candidates[0].content.parts[0].text;
+            addMessageToChat('bot', botResponse);
+        } else {
+            addMessageToChat('bot', 'Desculpe, não consegui processar sua mensagem. Tente novamente.');
+        }
+    } catch (error) {
+        console.error('Erro ao comunicar com Gemini:', error);
+        removeTypingIndicator();
+        addMessageToChat('bot', 'Desculpe, estou com problemas técnicos. Tente novamente mais tarde.');
+    }
+}
+
+// Função para adicionar indicador de digitando
+function addTypingIndicator() {
+    const messagesContainer = document.getElementById('chatMessages');
+    const typingDiv = document.createElement('div');
+    typingDiv.id = 'typingIndicator';
+    typingDiv.className = 'flex items-start space-x-2';
+    typingDiv.innerHTML = `
+        <img src="https://via.placeholder.com/32/4F46E5/ffffff?text=🤖" alt="Bot" class="w-8 h-8 rounded-full">
+        <div class="bg-blue-600 text-white p-3 rounded-lg">
+            <div class="flex space-x-1">
+                <div class="w-2 h-2 bg-white rounded-full animate-bounce"></div>
+                <div class="w-2 h-2 bg-white rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
+                <div class="w-2 h-2 bg-white rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+            </div>
+        </div>
+    `;
+    
+    messagesContainer.appendChild(typingDiv);
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+}
+
+// Função para remover indicador de digitando
+function removeTypingIndicator() {
+    const typingIndicator = document.getElementById('typingIndicator');
+    if (typingIndicator) {
+        typingIndicator.remove();
+    }
+}
+
+// Função para criar posts automáticos do bot
+function createBotPost() {
+    if (!botActive) return;
+    
+    const botPosts = [
+        "🤖 Olá desenvolvedores! Estou aqui para ajudar com suas dúvidas sobre programação!",
+        "💻 Dica do dia: Sempre comentem seu código para facilitar a manutenção futura!",
+        "🚀 Qual linguagem de programação vocês estão aprendendo hoje?",
+        "📱 Desenvolvimento mobile ou web? Qual preferem?",
+        "🔧 Precisam de ajuda com algum projeto? Estou aqui para auxiliar!",
+        "🌟 Lembrem-se: todo expert já foi iniciante um dia. Continuem praticando!",
+        "💡 Conhecem alguma ferramenta nova interessante para compartilhar?",
+        "🎯 Qual é o maior desafio que vocês enfrentam como desenvolvedores?"
+    ];
+    
+    const randomPost = botPosts[Math.floor(Math.random() * botPosts.length)];
+    
+    // Criar post no Firebase como se fosse do bot
+    db.collection('posts').add({
+        userId: 'isaac-bot',
+        userName: 'Isaac Bot',
+        userEmail: BOT_EMAIL,
+        userPic: 'https://via.placeholder.com/50/4F46E5/ffffff?text=🤖',
+        content: randomPost,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+        reactions: Math.floor(Math.random() * 20) + 5,
+        comments: [],
+        userReactions: [],
+        isBot: true,
+        verified: true
+    });
+}
+
+// Função para responder automaticamente a menções
+function checkForBotMentions() {
+    if (!botActive) return;
+    
+    db.collection('posts')
+        .where('content', '>=', '@Letícia')
+        .where('content', '<=', '@isaac\uf8ff')
+        .orderBy('timestamp', 'desc')
+        .limit(53)
+        .onSnapshot((snapshot) => {
+            snapshot.docChanges().forEach((change) => {
+                if (change.type === 'added') {
+                    const post = change.doc.data();
+                    if (post.content.toLowerCase().includes('@isaac') || post.content.toLowerCase().includes('@bot')) {
+                        respondToMention(post, change.doc.id);
+                    }
+                }
+            });
+        });
+}
+
+// Função para responder a menções
+async function respondToMention(post, postId) {
+    try {
+        const response = await fetch(`${GEMINI_API_URL}?key=${GEMINI_API_KEY}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                contents: [{
+                    parts: [{
+                        text: `Você foi mencionado em um post no American Dev. Responda de forma útil e amigável como Isaac Bot: "${post.content}"`
+                    }]
+                }]
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (data.candidates && data.candidates[0] && data.candidates[0].content) {
+            const botResponse = data.candidates[0].content.parts[0].text;
+            
+            // Adicionar comentário automático
+            db.collection('posts').doc(postId).get()
+                .then((doc) => {
+                    if (doc.exists) {
+                        const postData = doc.data();
+                        const comments = postData.comments || [];
+                        
+                        const newComment = {
+                            userId: 'isaac-bot',
+                            userName: 'Isaac Bot',
+                            userPic: 'https://via.placeholder.com/32/4F46E5/ffffff?text=🤖',
+                            text: botResponse,
+                            timestamp: new Date(),
+                            isBot: true,
+                            verified: true
+                        };
+                        
+                        db.collection('posts').doc(postId).update({
+                            comments: [...comments, newComment]
+                        });
+                    }
+                });
+        }
+    } catch (error) {
+        console.error('Erro ao responder menção:', error);
+    }
+}
+
+// Função para trocar foto de perfil com link do Imgur
+function changeProfilePicWithLink() {
+    if (!currentUser) return;
+    
+    const imageUrl = prompt('Cole o link da imagem do Imgur:\n(Exemplo: https://imgur.com/abc123.jpg ou https://i.imgur.com/abc123.png)');
+    
+    if (!imageUrl) return;
+    
+    // Verificar se é do domínio Imgur
+    const imgurRegex = /^https?:\/\/(i\.)?imgur\.com\/[a-zA-Z0-9]+\.(jpg|jpeg|png|gif)$/i;
+    
+    if (!imgurRegex.test(imageUrl)) {
+        alert('Por favor, use apenas links do Imgur!\nFormato aceito: https://imgur.com/ID.jpg ou https://i.imgur.com/ID.png');
+        return;
+    }
+    
+    // Testar se a imagem carrega
+    const img = new Image();
+    img.onload = function() {
+        // Imagem carregou com sucesso, atualizar perfil
+        db.collection('users').doc(currentUser.uid).update({
+            profilePic: imageUrl
+        }).then(() => {
+            // Atualizar todas as imagens de perfil na interface
+            const profilePics = document.querySelectorAll('[id$="ProfilePic"]');
+            profilePics.forEach(pic => pic.src = imageUrl);
+            
+            alert('Foto de perfil atualizada com sucesso!');
+        }).catch((error) => {
+            console.error('Erro ao atualizar foto:', error);
+            alert('Erro ao atualizar foto de perfil');
+        });
+    };
+    
+    img.onerror = function() {
+        alert('Erro ao carregar a imagem. Verifique se o link está correto.');
+    };
+    
+    img.src = imageUrl;
+}
+
+// Atualizar a função renderPost para incluir badge de verificação
+function renderPost(post) {
+    const postsContainer = document.getElementById('postsContainer');
+    
+    // Get user info for the post
+    db.collection('users').doc(post.userId).get()
+        .then((userDoc) => {
+            if (userDoc.exists) {
+                const userData = userDoc.data();
+                
+                const postElement = document.createElement('div');
+                postElement.className = 'post-card animate-fadeIn';
+                
+                const timeAgo = post.timestamp ? getTimeAgo(post.timestamp.toDate()) : 'Agora';
+                
+                // Verificar se é post do bot
+                const isBot = post.isBot || post.userId === 'isaac-bot';
+                const verified = userData.verified || post.verified || isBot;
+                
+                postElement.innerHTML = `
+                    <div class="flex items-start space-x-4">
+                        <div class="relative">
+                            <img src="${userData.profilePic || post.userPic || 'https://via.placeholder.com/50'}" 
+                                 alt="Profile" class="profile-pic">
+                            <div class="${userData.isOnline ? 'online-indicator' : 'online-indicator offline-indicator'}"></div>
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex items-center space-x-2">
+                                <h4 class="font-semibold text-white">${userData.name || post.userName}</h4>
+                                ${verified ? '<svg viewBox="0 0 22 22" class="w-5 h-5 text-blue-500 ml-1" fill="currentColor"><path d="M22.25 12c0-1.43-.88-2.67-2.19-3.34.46-1.39.2-2.9-.81-3.91s-2.52-1.27-3.91-.81c-.67-1.31-1.91-2.19-3.34-2.19s-2.67.88-3.33 2.19c-1.4-.46-2.91-.2-3.92.81s-1.27 2.52-.8 3.91c-1.31.67-2.2 1.91-2.2 3.34s.89 2.67 2.2 3.33c-.47 1.39-.2 2.9.8 3.92s2.52 1.27 3.91.81c.67 1.31 1.91 2.19 3.34 2.19s2.67-.88 3.33-2.19c1.4.46 2.91.2 3.92-.81s1.27-2.52.81-3.91c1.31-.67 2.19-1.91 2.19-3.34zm-11.5 4.88L6.41 12.5l1.41-1.41L10.75 14.07l5.42-5.42 1.41 1.41-6.83 6.82z"/></svg>' : ''}
+                                <span class="text-gray-400 text-sm">@${userData.name.toLowerCase().replace(/\s+/g, '') || 'isaacbot'}</span>
+                                <span class="text-gray-500 text-sm">•</span>
+                                <span class="text-gray-500 text-sm">${timeAgo}</span>
+                                ${isBot ? '<span class="bg-blue-500 text-white px-2 py-1 rounded-full text-xs">BOT</span>' : ''}
+                            </div>
+                            <p class="text-gray-200 mt-2">${post.content}</p>
+                            
+                            <div class="flex items-center space-x-6 mt-4">
+                                <button onclick="reactToPost('${post.id}')" 
+                                        class="reaction-btn flex items-center space-x-2 text-gray-400 hover:text-red-400 transition">
+                                    <i class="fas fa-heart"></i>
+                                    <span id="reactions-${post.id}">${post.reactions || 0}</span>
+                                </button>
+                                <button onclick="toggleComments('${post.id}')" 
+                                        class="flex items-center space-x-2 text-gray-400 hover:text-blue-400 transition">
+                                    <i class="fas fa-comment"></i>
+                                    <span>${post.comments ? post.comments.length : 0}</span>
+                                </button>
+                                <button class="flex items-center space-x-2 text-gray-400 hover:text-green-400 transition">
+                                    <i class="fas fa-share"></i>
+                                    <span>Compartilhar</span>
+                                </button>
+                            </div>
+                            
+                            <div id="comments-${post.id}" class="hidden mt-4 space-y-3">
+                                <div class="flex space-x-3">
+                                    <img src="${document.getElementById('headerProfilePic').src}" 
+                                         alt="Profile" class="w-8 h-8 rounded-full">
+                                    <div class="flex-1">
+                                        <textarea id="comment-input-${post.id}" 
+                                                  placeholder="Escreva um comentário..." 
+                                                  class="w-full p-2 bg-gray-800 text-white rounded-lg border border-gray-600 focus:border-blue-500 resize-none" 
+                                                  rows="2"></textarea>
+                                        <button onclick="addComment('${post.id}')" 
+                                                class="mt-2 bg-blue-600 text-white px-4 py-1 rounded-lg text-sm hover:bg-blue-700 transition">
+                                            Comentar
+                                        </button>
+                                    </div>
+                                </div>
+                                <div id="comments-list-${post.id}">
+                                    <!-- Comments will be loaded here -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                postsContainer.appendChild(postElement);
+                
+                // Load comments for this post
+                loadComments(post.id);
+            }
+        });
+}
+
+// Inicializar o chat bot quando a página carregar
+document.addEventListener('DOMContentLoaded', function() {
+    // Criar componentes do bot
+    createChatBotButton();
+    createChatWindow();
+    
+    // Carregar estado do bot
+    const savedBotState = localStorage.getItem('botActive');
+    if (savedBotState !== null) {
+        botActive = JSON.parse(savedBotState);
+        toggleBotActive();
+    }
+    
+    // Iniciar verificação de menções
+    checkForBotMentions();
+    
+    // Criar posts automáticos do bot a cada 30 minutos
+    setInterval(createBotPost, 30 * 60 * 1000);
+});
+
+// Atualizar o sidebar para incluir a opção de trocar foto com link
+function updateSidebarWithImageLink() {
+    const sidebarContent = document.querySelector('#sidebar .space-y-4');
+    if (sidebarContent) {
+        const linkButton = document.createElement('button');
+        linkButton.onclick = changeProfilePicWithLink;
+        linkButton.className = 'w-full bg-purple-600 text-white py-3 rounded-lg hover:bg-purple-700 transition';
+        linkButton.innerHTML = '<i class="fas fa-link mr-2"></i>Trocar Foto (Link Imgur)';
+        
+        // Inserir após o botão de trocar foto existente
+        const changePhotoBtn = sidebarContent.querySelector('button[onclick="changeProfilePic()"]');
+        if (changePhotoBtn) {
+            changePhotoBtn.parentNode.insertBefore(linkButton, changePhotoBtn.nextSibling);
+        }
+    }
+}
+
+// Chamar a função para atualizar o sidebar
+setTimeout(updateSidebarWithImageLink, 1000);
+
+// Adicionar após as variáveis globais existentes
+const adminEmails = [
+    'empresadev@gmail.com',
+    'paulo@gmail.com', 
+    'isaacmuaco172@gmail.com',
+    'isaacmuaco582@gmail.com',
+    'isaacmuaco2@gmail.com',
+    'isaacmub82@gmail.com',
+    'Isaacofficialdev@gmail.com'
+];
+
+// Função para mostrar formulário de verificação
+function showVerificationForm() {
+    const modal = document.createElement('div');
+    modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+    modal.innerHTML = `
+        <div class="glass-effect p-8 rounded-lg max-w-md w-full mx-4 animate-fadeIn">
+            <h3 class="text-2xl font-bold text-white mb-6 text-center">
+                <i class="fas fa-check-circle text-blue-500 mr-2"></i>
+                Pedir Verificação
+            </h3>
+            <form id="verificationForm" class="space-y-4">
+                <div>
+                    <label class="block text-white mb-2">Nome Completo</label>
+                    <input type="text" id="verifyName" class="w-full p-3 rounded-lg bg-gray-800 text-white border border-gray-600 focus:border-blue-500" placeholder="Seu nome completo" required>
+                </div>
+                <div>
+                    <label class="block text-white mb-2">E-mail</label>
+                    <input type="email" id="verifyEmail" class="w-full p-3 rounded-lg bg-gray-800 text-white border border-gray-600 focus:border-blue-500" placeholder="seu@email.com" required>
+                </div>
+                <div>
+                    <label class="block text-white mb-2">Profissão/Área</label>
+                    <input type="text" id="verifyProfession" class="w-full p-3 rounded-lg bg-gray-800 text-white border border-gray-600 focus:border-blue-500" placeholder="Ex: Desenvolvedor Web, Designer, etc." required>
+                </div>
+                <div>
+                    <label class="block text-white mb-2">Motivo da Verificação</label>
+                    <textarea id="verifyReason" class="w-full p-3 rounded-lg bg-gray-800 text-white border border-gray-600 focus:border-blue-500 resize-none" rows="4" placeholder="Por que você merece ser verificado? (Experiência, projetos, contribuições, etc.)" required></textarea>
+                </div>
+                <div>
+                    <label class="block text-white mb-2">Links de Portfólio/Redes Sociais</label>
+                    <textarea id="verifyLinks" class="w-full p-3 rounded-lg bg-gray-800 text-white border border-gray-600 focus:border-blue-500 resize-none" rows="3" placeholder="LinkedIn, GitHub, Website, Instagram, etc. (um por linha)"></textarea>
+                </div>
+                <div class="flex space-x-4">
+                    <button type="submit" class="flex-1 gradient-btn text-white py-3 rounded-lg font-semibold hover:transform hover:scale-105 transition">
+                        <i class="fas fa-paper-plane mr-2"></i>
+                        Enviar Solicitação
+                    </button>
+                    <button type="button" onclick="closeVerificationForm()" class="flex-1 bg-gray-600 text-white py-3 rounded-lg font-semibold hover:bg-gray-700 transition">
+                        <i class="fas fa-times mr-2"></i>
+                        Cancelar
+                    </button>
+                </div>
+            </form>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    // Preencher dados do usuário atual
+    if (currentUser) {
+        document.getElementById('verifyName').value = currentUser.displayName || '';
+        document.getElementById('verifyEmail').value = currentUser.email || '';
+    }
+    
+    // Handle form submission
+    document.getElementById('verificationForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        submitVerificationRequest();
+    });
+}
+
+// Função para fechar formulário de verificação
+function closeVerificationForm() {
+    const modal = document.querySelector('.fixed.inset-0');
+    if (modal) {
+        modal.remove();
+    }
+}
+
+// Função para enviar solicitação de verificação
+function submitVerificationRequest() {
+    const name = document.getElementById('verifyName').value.trim();
+    const email = document.getElementById('verifyEmail').value.trim();
+    const profession = document.getElementById('verifyProfession').value.trim();
+    const reason = document.getElementById('verifyReason').value.trim();
+    const links = document.getElementById('verifyLinks').value.trim();
+    
+    if (!name || !email || !profession || !reason) {
+        alert('Por favor, preencha todos os campos obrigatórios');
+        return;
+    }
+    
+    // Verificar se já existe solicitação pendente
+    db.collection('verificationRequests')
+        .where('userId', '==', currentUser.uid)
+        .where('status', '==', 'pending')
+        .get()
+        .then((querySnapshot) => {
+            if (!querySnapshot.empty) {
+                alert('Você já possui uma solicitação de verificação pendente');
+                closeVerificationForm();
+                return;
+            }
+            
+            // Criar nova solicitação
+            const verificationData = {
+                userId: currentUser.uid,
+                name: name,
+                email: email,
+                profession: profession,
+                reason: reason,
+                links: links,
+                status: 'pending',
+                submittedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                userEmail: currentUser.email
+            };
+            
+            db.collection('verificationRequests').add(verificationData)
+                .then((docRef) => {
+                    // Enviar notificação para administradores
+                    sendVerificationNotification(verificationData, docRef.id);
+                    
+                    alert('Solicitação de verificação enviada com sucesso! Você receberá uma resposta em breve.');
+                    closeVerificationForm();
+                })
+                .catch((error) => {
+                    console.error('Erro ao enviar solicitação:', error);
+                    alert('Erro ao enviar solicitação. Tente novamente.');
+                });
+        })
+        .catch((error) => {
+            console.error('Erro ao verificar solicitações:', error);
+            alert('Erro ao verificar solicitações existentes.');
+        });
+}
+
+// Função para enviar notificação aos administradores
+function sendVerificationNotification(verificationData, requestId) {
+    const notificationData = {
+        type: 'verification_request',
+        requestId: requestId,
+        userName: verificationData.name,
+        userEmail: verificationData.userEmail,
+        profession: verificationData.profession,
+        reason: verificationData.reason,
+        links: verificationData.links,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+        adminEmails: adminEmails
+    };
+    
+    // Salvar notificação no banco
+    db.collection('adminNotifications').add(notificationData)
+        .then(() => {
+            console.log('Notificação enviada aos administradores');
+        })
+        .catch((error) => {
+            console.error('Erro ao enviar notificação:', error);
+        });
+}
+
+// Função para verificar se é administrador
+function isAdmin() {
+    return currentUser && adminEmails.includes(currentUser.email);
+}
+
+// Função para mostrar painel de administração (apenas para admins)
+function showAdminPanel() {
+    if (!isAdmin()) {
+        alert('Acesso negado. Apenas administradores podem acessar este painel.');
+        return;
+    }
+    
+    const modal = document.createElement('div');
+    modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+    modal.innerHTML = `
+        <div class="glass-effect p-8 rounded-lg max-w-4xl w-full mx-4 animate-fadeIn max-h-screen overflow-y-auto">
+            <h3 class="text-2xl font-bold text-white mb-6 text-center">
+                <i class="fas fa-cog text-blue-500 mr-2"></i>
+                Painel de Administração
+            </h3>
+            <div class="space-y-6">
+                <div class="bg-gray-800 p-4 rounded-lg">
+                    <h4 class="text-lg font-semibold text-white mb-4">Solicitações de Verificação Pendentes</h4>
+                    <div id="pendingVerifications" class="space-y-4">
+                        <!-- Carregando... -->
+                    </div>
+                </div>
+            </div>
+            <div class="mt-6 text-center">
+                <button onclick="closeAdminPanel()" class="bg-gray-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-gray-700 transition">
+                    <i class="fas fa-times mr-2"></i>
+                    Fechar
+                </button>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    loadPendingVerifications();
+}
+
+// Função para carregar verificações pendentes
+function loadPendingVerifications() {
+    db.collection('verificationRequests')
+        .where('status', '==', 'pending')
+        .orderBy('submittedAt', 'desc')
+        .get()
+        .then((querySnapshot) => {
+            const container = document.getElementById('pendingVerifications');
+            container.innerHTML = '';
+            
+            if (querySnapshot.empty) {
+                container.innerHTML = '<p class="text-gray-400 text-center">Nenhuma solicitação pendente</p>';
+                return;
+            }
+            
+            querySnapshot.forEach((doc) => {
+                const request = doc.data();
+                const requestId = doc.id;
+                
+                const requestElement = document.createElement('div');
+                requestElement.className = 'bg-gray-700 p-4 rounded-lg border border-gray-600';
+                requestElement.innerHTML = `
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <h5 class="text-white font-semibold">${request.name}</h5>
+                            <p class="text-gray-400 text-sm">${request.email}</p>
+                            <p class="text-blue-400 text-sm">${request.profession}</p>
+                        </div>
+                        <span class="bg-yellow-600 text-white px-3 py-1 rounded-full text-sm">Pendente</span>
+                    </div>
+                    <div class="mb-4">
+                        <h6 class="text-white font-medium mb-2">Motivo:</h6>
+                        <p class="text-gray-300 text-sm">${request.reason}</p>
+                    </div>
+                    ${request.links ? `
+                        <div class="mb-4">
+                            <h6 class="text-white font-medium mb-2">Links:</h6>
+                            <p class="text-gray-300 text-sm">${request.links.replace(/\n/g, '<br>')}</p>
+                        </div>
+                    ` : ''}
+                    <div class="flex space-x-3">
+                        <button onclick="approveVerification('${requestId}', '${request.userId}')" 
+                                class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition">
+                            <i class="fas fa-check mr-2"></i>
+                            Aprovar
+                        </button>
+                        <button onclick="rejectVerification('${requestId}', '${request.userId}')" 
+                                class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition">
+                            <i class="fas fa-times mr-2"></i>
+                            Rejeitar
+                        </button>
+                    </div>
+                `;
+                
+                container.appendChild(requestElement);
+            });
+        })
+        .catch((error) => {
+            console.error('Erro ao carregar verificações:', error);
+        });
+}
+
+// Função para aprovar verificação
+function approveVerification(requestId, userId) {
+    if (!confirm('Tem certeza que deseja aprovar esta verificação?')) return;
+    
+    // Atualizar status da solicitação
+    db.collection('verificationRequests').doc(requestId).update({
+        status: 'approved',
+        approvedAt: firebase.firestore.FieldValue.serverTimestamp(),
+        approvedBy: currentUser.email
+    });
+    
+    // Verificar usuário
+    db.collection('users').doc(userId).update({
+        verified: true,
+        verifiedAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    
+    alert('Verificação aprovada com sucesso!');
+    loadPendingVerifications();
+}
+
+// Função para rejeitar verificação
+function rejectVerification(requestId, userId) {
+    const reason = prompt('Motivo da rejeição (opcional):');
+    
+    if (!confirm('Tem certeza que deseja rejeitar esta verificação?')) return;
+    
+    // Atualizar status da solicitação
+    db.collection('verificationRequests').doc(requestId).update({
+        status: 'rejected',
+        rejectedAt: firebase.firestore.FieldValue.serverTimestamp(),
+        rejectedBy: currentUser.email,
+        rejectionReason: reason || ''
+    });
+    
+    alert('Verificação rejeitada!');
+    loadPendingVerifications();
+}
+
+// Função para fechar painel de administração
+function closeAdminPanel() {
+    const modal = document.querySelector('.fixed.inset-0');
+    if (modal) {
+        modal.remove();
+    }
+}
+
+// Atualizar função renderPost para incluir o novo badge de verificação
+function renderPost(post) {
+    const postsContainer = document.getElementById('postsContainer');
+    
+    // Get user info for the post
+    db.collection('users').doc(post.userId).get()
+        .then((userDoc) => {
+            if (userDoc.exists) {
+                const userData = userDoc.data();
+                
+                const postElement = document.createElement('div');
+                postElement.className = 'post-card animate-fadeIn';
+                
+                const timeAgo = post.timestamp ? getTimeAgo(post.timestamp.toDate()) : 'Agora';
+                
+                // Novo badge de verificação
+                const verificationBadge = userData.verified ? 
+                    '<svg viewBox="0 0 22 22" class="w-5 h-5 text-blue-500 ml-1" fill="currentColor"><path d="M22.25 12c0-1.43-.88-2.67-2.19-3.34.46-1.39.2-2.9-.81-3.91s-2.52-1.27-3.91-.81c-.67-1.31-1.91-2.19-3.34-2.19s-2.67.88-3.33 2.19c-1.4-.46-2.91-.2-3.92.81s-1.27 2.52-.8 3.91c-1.31.67-2.2 1.91-2.2 3.34s.89 2.67 2.2 3.33c-.47 1.39-.2 2.9.8 3.92s2.52 1.27 3.91.81c.67 1.31 1.91 2.19 3.34 2.19s2.67-.88 3.33-2.19c1.4.46 2.91.2 3.92-.81s1.27-2.52.81-3.91c1.31-.67 2.19-1.91 2.19-3.34zm-11.5 4.88L6.41 12.5l1.41-1.41L10.75 14.07l5.42-5.42 1.41 1.41-6.83 6.82z"/></svg>' : 
+                    '';
+                
+                postElement.innerHTML = `
+                    <div class="flex items-start space-x-4">
+                        <div class="relative">
+                            <img src="${userData.profilePic || 'https://imgur.com/702jMhU.jpg'}" 
+                                 alt="Profile" class="profile-pic">
+                            <div class="${userData.isOnline ? 'online-indicator' : 'online-indicator offline-indicator'}"></div>
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex items-center space-x-2">
+                                <h4 class="font-semibold text-white flex items-center">
+                                    ${userData.name}
+                                    ${verificationBadge}
+                                </h4>
+                                <span class="text-gray-400 text-sm">@${userData.name.toLowerCase().replace(/\s+/g, '')}</span>
+                                <span class="text-gray-500 text-sm">•</span>
+                                <span class="text-gray-500 text-sm">${timeAgo}</span>
+                            </div>
+                            <p class="text-gray-200 mt-2">${post.content}</p>
+                            
+                            <div class="flex items-center space-x-6 mt-4">
+                                <button onclick="reactToPost('${post.id}')" 
+                                        class="reaction-btn flex items-center space-x-2 text-gray-400 hover:text-red-400 transition">
+                                    <i class="fas fa-heart"></i>
+                                    <span id="reactions-${post.id}">${post.reactions || 0}</span>
+                                </button>
+                                <button onclick="toggleComments('${post.id}')" 
+                                        class="flex items-center space-x-2 text-gray-400 hover:text-blue-400 transition">
+                                    <i class="fas fa-comment"></i>
+                                    <span>${post.comments ? post.comments.length : 0}</span>
+                                </button>
+                                <button class="flex items-center space-x-2 text-gray-400 hover:text-green-400 transition">
+                                    <i class="fas fa-share"></i>
+                                    <span>Compartilhar</span>
+                                </button>
+                            </div>
+                            
+                            <div id="comments-${post.id}" class="hidden mt-4 space-y-3">
+                                <div class="flex space-x-3">
+                                    <img src="${document.getElementById('headerProfilePic').src}" 
+                                         alt="Profile" class="w-8 h-8 rounded-full">
+                                    <div class="flex-1">
+                                        <textarea id="comment-input-${post.id}" 
+                                                  placeholder="Escreva um comentário..." 
+                                                  class="w-full p-2 bg-gray-800 text-white rounded-lg border border-gray-600 focus:border-blue-500 resize-none" 
+                                                  rows="2"></textarea>
+                                        <button onclick="addComment('${post.id}')" 
+                                                class="mt-2 bg-blue-600 text-white px-4 py-1 rounded-lg text-sm hover:bg-blue-700 transition">
+                                            Comentar
+                                        </button>
+                                    </div>
+                                </div>
+                                <div id="comments-list-${post.id}">
+                                    <!-- Comments will be loaded here -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                postsContainer.appendChild(postElement);
+                
+                // Load comments for this post
+                loadComments(post.id);
+            }
+        });
+}
+
+// Atualizar o sidebar para incluir o botão de verificação
+function updateSidebarContent() {
+    const sidebarContent = document.querySelector('#sidebar .space-y-4');
+    if (sidebarContent) {
+        // Adicionar botão de verificação se não existir
+        if (!document.getElementById('verificationBtn')) {
+            const verificationBtn = document.createElement('button');
+            verificationBtn.id = 'verificationBtn';
+            verificationBtn.className = 'w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition';
+            verificationBtn.innerHTML = '<i class="fas fa-check-circle mr-2"></i>Pedir Verificação';
+            verificationBtn.onclick = showVerificationForm;
+            
+            sidebarContent.insertBefore(verificationBtn, sidebarContent.firstChild);
+        }
+        
+        // Adicionar botão de admin se for administrador
+        if (isAdmin() && !document.getElementById('adminPanelBtn')) {
+            const adminBtn = document.createElement('button');
+            adminBtn.id = 'adminPanelBtn';
+            adminBtn.className = 'w-full bg-red-600 text-white py-3 rounded-lg hover:bg-red-700 transition';
+            adminBtn.innerHTML = '<i class="fas fa-shield-alt mr-2"></i>Painel Admin';
+            adminBtn.onclick = showAdminPanel;
+            
+            sidebarContent.appendChild(adminBtn);
+        }
+    }
+}
+
+// Atualizar função updateProfileUI para incluir verificação
+function updateProfileUI(userData) {
+    const profilePics = document.querySelectorAll('[id$="ProfilePic"]');
+    const userNames = document.querySelectorAll('[id$="UserName"]');
+    const profileNames = document.querySelectorAll('[id$="PageName"]');
+    
+    profilePics.forEach(pic => pic.src = userData.profilePic || 'https://via.placeholder.com/150');
+    
+    // Atualizar nomes com badge de verificação
+    const verificationBadge = userData.verified ? 
+        '<svg viewBox="0 0 22 22" class="w-5 h-5 text-blue-500 ml-1" fill="currentColor"><path d="M22.25 12c0-1.43-.88-2.67-2.19-3.34.46-1.39.2-2.9-.81-3.91s-2.52-1.27-3.91-.81c-.67-1.31-1.91-2.19-3.34-2.19s-2.67.88-3.33 2.19c-1.4-.46-2.91-.2-3.92.81s-1.27 2.52-.8 3.91c-1.31.67-2.2 1.91-2.2 3.34s.89 2.67 2.2 3.33c-.47 1.39-.2 2.9.8 3.92s2.52 1.27 3.91.81c.67 1.31 1.91 2.19 3.34 2.19s2.67-.88 3.33-2.19c1.4.46 2.91.2 3.92-.81s1.27-2.52.81-3.91c1.31-.67 2.19-1.91 2.19-3.34zm-11.5 4.88L6.41 12.5l1.41-1.41L10.75 14.07l5.42-5.42 1.41 1.41-6.83 6.82z"/></svg>':'';
+     userNames.forEach(name => name.innerHTML = `${userData.name || 'Usuário'} ${verificationBadge}`);
+    profileNames.forEach(name => name.innerHTML = `${userData.name || 'Usuário'} ${verificationBadge}`);
+    
+    // Update online status
+    updateOnlineStatus(userData.isOnline);
+    
+    // Update member since
+    if (userData.createdAt) {
+        const date = userData.createdAt.toDate();
+        const memberSinceEl = document.getElementById('memberSince');
+        if (memberSinceEl) {
+            memberSinceEl.textContent = date.toLocaleDateString('pt-BR');
+        }
+    }
+    
+    // Atualizar sidebar
+    updateSidebarContent();
+}
+
+
+// Função para trocar foto de perfil com link do Imgur
+
+    
+    const imageUrl = prompt('Cole o link da imagem do Imgur (apenas https://imgur.com/ é aceito):');
+    
+    if (!imageUrl || !imageUrl.trim()) {
+        return;
+    }
+    
+    // Validar se é um link do Imgur
+    if (!validateImgurUrl(imageUrl)) {
+        alert('Por favor, use apenas links do Imgur (https://imgur.com/)');
+        return;
+    }
+    
+    // Processar o link do Imgur
+    const processedUrl = processImgurUrl(imageUrl);
+    
+    // Atualizar foto de perfil no Firebase
+    db.collection('users').doc(currentUser.uid).update({
+        profilePic: processedUrl
+    }).then(() => {
+        // Atualizar todas as imagens de perfil na interface
+        updateAllProfilePictures(processedUrl);
+        alert('Foto de perfil atualizada com sucesso!');
+        
+        // Fechar sidebar
+        document.getElementById('sidebar').classList.remove('active');
+    }).catch((error) => {
+        console.error('Erro ao atualizar foto:', error);
+        alert('Erro ao atualizar foto de perfil');
+    });
+}
+
+// Função para validar URL do Imgur
+function validateImgurUrl(url) {
+    const imgurPattern = /^https:\/\/(i\.)?imgur\.com\//;
+    return imgurPattern.test(url);
+}
+
+// Função para processar URL do Imgur
+function processImgurUrl(url) {
+    // Se já tem extensão, retorna como está
+    if (url.match(/\.(jpg|jpeg|png|gif|webp)$/i)) {
+        return url;
+    }
+    
+    // Se é um link do imgur.com (não i.imgur.com), converter para i.imgur.com
+    if (url.includes('imgur.com/') && !url.includes('i.imgur.com')) {
+        const imageId = url.split('imgur.com/')[1];
+        return `https://i.imgur.com/${imageId}.jpg`;
+    }
+    
+    // Se é i.imgur.com mas sem extensão, adicionar .jpg
+    if (url.includes('i.imgur.com') && !url.match(/\.(jpg|jpeg|png|gif|webp)$/i)) {
+        return `${url}.jpg`;
+    }
+    
+    return url;
+}
+
+// Função para atualizar todas as imagens de perfil na interface
+function updateAllProfilePictures(newImageUrl) {
+    // Atualizar todas as imagens de perfil do usuário atual
+    const profilePics = document.querySelectorAll('[id*="ProfilePic"]');
+    profilePics.forEach(pic => {
+        pic.src = newImageUrl;
+    });
+    
+    // Atualizar imagem do header
+    const headerPic = document.getElementById('headerProfilePic');
+    if (headerPic) {
+        headerPic.src = newImageUrl;
+    }
+    
+    // Atualizar imagem da sidebar
+    const sidebarPic = document.getElementById('sidebarProfilePic');
+    if (sidebarPic) {
+        sidebarPic.src = newImageUrl;
+    }
+    
+    // Atualizar imagem da página de perfil
+    const profilePagePic = document.getElementById('profilePagePic');
+    if (profilePagePic) {
+        profilePagePic.src = newImageUrl;
+    }
+}
+// Função para verificar se a imagem carregou corretamente
+function validateImageLoad(url, callback) {
+    const img = new Image();
+    img.onload = function() {
+        callback(true);
+    };
+    img.onerror = function() {
+        callback(false);
+    };
+    img.src = url;
+}
+
+// Versão melhorada da função changeProfilePicWithLink com validação de imagem
+function changeProfilePicWithLinkAdvanced() {
+    if (!currentUser) return;
+    
+ const imageUrl = prompt('Cole o link da imagem do Imgur:\n\nExemplos aceitos:\n- https://imgur.com/abc123\n- https://i.imgur.com/abc123.jpg\n- https://i.imgur.com/abc123.png');
+    
+    if (!imageUrl || !imageUrl.trim()) {
+        return;
+    }
+    
+    // Validar se é um link do Imgur
+    if (!validateImgurUrl(imageUrl)) {
+        alert('❌ Erro: Apenas links do Imgur são aceitos!\n\nFormatos aceitos:\n- https://imgur.com/ID\n- https://i.imgur.com/ID.jpg\n- https://i.imgur.com/ID.png');
+        return;
+    }
+    
+    // Processar o link do Imgur
+    const processedUrl = processImgurUrl(imageUrl);
+    
+    // Mostrar loading
+    const loadingAlert = alert('Verificando imagem...');
+    
+    // Validar se a imagem carrega
+    validateImageLoad(processedUrl, function(isValid) {
+        if (!isValid) {
+            alert('❌ Erro: Não foi possível carregar a imagem.\n\nVerifique se:\n- O link está correto\n- A imagem existe no Imgur\n- O link não está quebrado');
+            return;
+        }
+        
+        // Atualizar foto de perfil no Firebase
+        db.collection('users').doc(currentUser.uid).update({
+            profilePic: processedUrl
+        }).then(() => {
+            // Atualizar todas as imagens de perfil na interface
+            updateAllProfilePictures(processedUrl);
+            alert('✅ Foto de perfil atualizada com sucesso!');
+            
+            // Fechar sidebar
+            document.getElementById('sidebar').classList.remove('active');
+        }).catch((error) => {
+            console.error('Erro ao atualizar foto:', error);
+            alert('❌ Erro ao atualizar foto de perfil');
+        });
+    });
+}
+
+// Configuração do Bot
+const BOT_EMAIL = 'isaacmub82@gmail.com';
+const GEMINI_API_KEY = 'AIzaSyDaU-2y8u-94gCDghFfL83gm1lFqB0l7Cs';
+const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent';
+
+let botActive = false;
+let chatOpen = false;
+
+// Função para criar o botão do chat bot
+function createChatBotButton() {
+    const chatButton = document.createElement('div');
+    chatButton.id = 'chatBotButton';
+    chatButton.className = 'fixed bottom-6 right-6 w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center cursor-pointer shadow-lg hover:shadow-xl transform hover:scale-110 transition-all duration-300 z-50';
+    chatButton.innerHTML = `
+        <div class="relative">
+            <i class="fas fa-robot text-white text-2xl"></i>
+            <div id="botStatusIndicator" class="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-white ${botActive ? '' : 'bg-gray-500'}"></div>
+        </div>
+    `;
+    
+    chatButton.addEventListener('click', toggleChat);
+    document.body.appendChild(chatButton);
+}
+
+// Função para criar a janela do chat
+function createChatWindow() {
+    const chatWindow = document.createElement('div');
+    chatWindow.id = 'chatWindow';
+    chatWindow.className = 'fixed bottom-24 right-6 w-80 h-96 glass-effect rounded-lg shadow-2xl z-50 hidden animate-slideIn';
+    chatWindow.innerHTML = `
+        <div class="flex flex-col h-full">
+            <!-- Header do Chat -->
+            <div class="flex items-center justify-between p-4 border-b border-gray-600">
+                <div class="flex items-center space-x-3">
+                    <div class="relative">
+                        <img src="https://via.placeholder.com/40/4F46E5/ffffff?text=🤖" alt="Bot" class="w-10 h-10 rounded-full">
+                        <div class="absolute -bottom-1 -right-1 w-4 h-4 bg-blue-500 rounded-full border-2 border-white flex items-center justify-center">
+                            <svg viewBox="0 0 22 22" class="w-3 h-3 text-white" fill="currentColor">
+                                <path d="M22.25 12c0-1.43-.88-2.67-2.19-3.34.46-1.39.2-2.9-.81-3.91s-2.52-1.27-3.91-.81c-.67-1.31-1.91-2.19-3.34-2.19s-2.67.88-3.33 2.19c-1.4-.46-2.91-.2-3.92.81s-1.27 2.52-.8 3.91c-1.31.67-2.2 1.91-2.2 3.34s.89 2.67 2.2 3.33c-.47 1.39-.2 2.9.8 3.92s2.52 1.27 3.91.81c.67 1.31 1.91 2.19 3.34 2.19s2.67-.88 3.33-2.19c1.4.46 2.91.2 3.92-.81s1.27-2.52.81-3.91c1.31-.67 2.19-1.91 2.19-3.34zm-11.5 4.88L6.41 12.5l1.41-1.41L10.75 14.07l5.42-5.42 1.41 1.41-6.83 6.82z"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="text-white font-semibold">Isaac Bot</h3>
+                        <p class="text-gray-400 text-xs">Assistente IA</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <button id="toggleBotActive" onclick="toggleBotActive()" class="px-3 py-1 rounded-full text-xs font-semibold transition ${botActive ? 'bg-green-500 text-white' : 'bg-gray-500 text-white'}">
+                        ${botActive ? 'Ativo' : 'Inativo'}
+                    </button>
+                    <button onclick="toggleChat()" class="text-gray-400 hover:text-white transition">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Mensagens do Chat -->
+            <div id="chatMessages" class="flex-1 overflow-y-auto p-4 space-y-3">
+                <div class="flex items-start space-x-2">
+                    <img src="https://via.placeholder.com/32/4F46E5/ffffff?text=🤖" alt="Bot" class="w-8 h-8 rounded-full">
+                    <div class="bg-blue-600 text-white p-3 rounded-lg max-w-xs">
+                        <p class="text-sm">Olá! Eu sou o Isaac Bot, seu assistente IA. Como posso te ajudar?</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Input do Chat -->
+            <div class="p-4 border-t border-gray-600">
+                <div class="flex space-x-2">
+                    <input type="text" id="chatInput" placeholder="Digite sua mensagem..." class="flex-1 p-2 bg-gray-800 text-white rounded-lg border border-gray-600 focus:border-blue-500 text-sm">
+                    <button onclick="sendMessage()" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(chatWindow);
+    
+    // Adicionar evento de Enter no input
+    document.getElementById('chatInput').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            sendMessage();
+        }
+    });
+}
+
+// Função para alternar o chat
+function toggleChat() {
+    const chatWindow = document.getElementById('chatWindow');
+    if (chatWindow.classList.contains('hidden')) {
+        chatWindow.classList.remove('hidden');
+        chatOpen = true;
+    } else {
+        chatWindow.classList.add('hidden');
+        chatOpen = false;
+    }
+}
+
+// Função para alternar o status do bot
+function toggleBotActive() {
+    botActive = !botActive;
+    
+    const statusIndicator = document.getElementById('botStatusIndicator');
+    const toggleButton = document.getElementById('toggleBotActive');
+    
+    if (botActive) {
+        statusIndicator.className = 'absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-white';
+        toggleButton.className = 'px-3 py-1 rounded-full text-xs font-semibold transition bg-green-500 text-white';
+        toggleButton.textContent = 'Ativo';
+    } else {
+        statusIndicator.className = 'absolute -top-1 -right-1 w-4 h-4 bg-gray-500 rounded-full border-2 border-white';
+        toggleButton.className = 'px-3 py-1 rounded-full text-xs font-semibold transition bg-gray-500 text-white';
+        toggleButton.textContent = 'Inativo';
+    }
+    
+    // Salvar estado no localStorage
+    localStorage.setItem('botActive', botActive);
+}
+
+// Função para enviar mensagem
+function sendMessage() {
+    const input = document.getElementById('chatInput');
+    const message = input.value.trim();
+    
+    if (!message) return;
+    
+    // Adicionar mensagem do usuário
+    addMessageToChat('user', message);
+    input.value = '';
+    
+    // Se o bot estiver ativo, enviar para Gemini
+    if (botActive) {
+        sendToGemini(message);
+    } else {
+        // Resposta automática quando inativo
+        setTimeout(() => {
+            addMessageToChat('bot', 'Desculpe, estou inativo no momento. Ative-me para conversar!');
+        }, 1000);
+    }
+}
+
+// Função para adicionar mensagem ao chat
+function addMessageToChat(sender, message) {
+    const messagesContainer = document.getElementById('chatMessages');
+    const messageDiv = document.createElement('div');
+    
+    if (sender === 'user') {
+        messageDiv.className = 'flex items-start space-x-2 justify-end';
+        messageDiv.innerHTML = `
+            <div class="bg-gray-700 text-white p-3 rounded-lg max-w-xs">
+                <p class="text-sm">${message}</p>
+            </div>
+            <img src="${document.getElementById('headerProfilePic').src}" alt="User" class="w-8 h-8 rounded-full">
+        `;
+    } else {
+        messageDiv.className = 'flex items-start space-x-2';
+        messageDiv.innerHTML = `
+            <img src="https://via.placeholder.com/32/4F46E5/ffffff?text=🤖" alt="Bot" class="w-8 h-8 rounded-full">
+            <div class="bg-blue-600 text-white p-3 rounded-lg max-w-xs">
+                <p class="text-sm">${message}</p>
+            </div>
+        `;
+    }
+    
+    messagesContainer.appendChild(messageDiv);
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+}
+
+// Função para enviar mensagem para Gemini
+async function sendToGemini(message) {
+    try {
+        // Mostrar indicador de digitando
+        addTypingIndicator();
+        
+        const response = await fetch(`${GEMINI_API_URL}?key=${GEMINI_API_KEY}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                contents: [{
+                    parts: [{
+                        text: `Você é Isaac Bot, um assistente IA do American Dev, uma rede social para desenvolvedores. Responda de forma amigável e útil sobre desenvolvimento web, programação e tecnologia. Mensagem: ${message}`
+                    }]
+                }]
+            })
+        });
+        
+        const data = await response.json();
+        
+        // Remover indicador de digitando
+        removeTypingIndicator();
+        
+        if (data.candidates && data.candidates[0] && data.candidates[0].content) {
+            const botResponse = data.candidates[0].content.parts[0].text;
+            addMessageToChat('bot', botResponse);
+        } else {
+            addMessageToChat('bot', 'Desculpe, não consegui processar sua mensagem. Tente novamente.');
+        }
+    } catch (error) {
+        console.error('Erro ao comunicar com Gemini:', error);
+        removeTypingIndicator();
+        addMessageToChat('bot', 'Desculpe, estou com problemas técnicos. Tente novamente mais tarde.');
+    }
+}
+
+// Função para adicionar indicador de digitando
+function addTypingIndicator() {
+    const messagesContainer = document.getElementById('chatMessages');
+    const typingDiv = document.createElement('div');
+    typingDiv.id = 'typingIndicator';
+    typingDiv.className = 'flex items-start space-x-2';
+    typingDiv.innerHTML = `
+        <img src="https://via.placeholder.com/32/4F46E5/ffffff?text=🤖" alt="Bot" class="w-8 h-8 rounded-full">
+        <div class="bg-blue-600 text-white p-3 rounded-lg">
+            <div class="flex space-x-1">
+                <div class="w-2 h-2 bg-white rounded-full animate-bounce"></div>
+                <div class="w-2 h-2 bg-white rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
+                <div class="w-2 h-2 bg-white rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+            </div>
+        </div>
+    `;
+    
+    messagesContainer.appendChild(typingDiv);
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+}
+
+// Função para remover indicador de digitando
+function removeTypingIndicator() {
+    const typingIndicator = document.getElementById('typingIndicator');
+    if (typingIndicator) {
+        typingIndicator.remove();
+    }
+}
+
+// Função para criar posts automáticos do bot
+function createBotPost() {
+    if (!botActive) return;
+    
+    const botPosts = [
+        "🤖 Olá desenvolvedores! Estou aqui para ajudar com suas dúvidas sobre programação!",
+        "💻 Dica do dia: Sempre comentem seu código para facilitar a manutenção futura!",
+        "🚀 Qual linguagem de programação vocês estão aprendendo hoje?",
+        "📱 Desenvolvimento mobile ou web? Qual preferem?",
+        "🔧 Precisam de ajuda com algum projeto? Estou aqui para auxiliar!",
+        "🌟 Lembrem-se: todo expert já foi iniciante um dia. Continuem praticando!",
+        "💡 Conhecem alguma ferramenta nova interessante para compartilhar?",
+        "🎯 Qual é o maior desafio que vocês enfrentam como desenvolvedores?"
+    ];
+    
+    const randomPost = botPosts[Math.floor(Math.random() * botPosts.length)];
+    
+    // Criar post no Firebase como se fosse do bot
+    db.collection('posts').add({
+        userId: 'isaac-bot',
+        userName: 'Isaac Bot',
+        userEmail: BOT_EMAIL,
+        userPic: 'https://via.placeholder.com/50/4F46E5/ffffff?text=🤖',
+        content: randomPost,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+        reactions: Math.floor(Math.random() * 20) + 5,
+        comments: [],
+        userReactions: [],
+        isBot: true,
+        verified: true
+    });
+}
+
+// Função para responder automaticamente a menções
+function checkForBotMentions() {
+    if (!botActive) return;
+    
+    db.collection('posts')
+        .where('content', '>=', '@isaac')
+        .where('content', '<=', '@isaac\uf8ff')
+        .orderBy('timestamp', 'desc')
+        .limit(5)
+        .onSnapshot((snapshot) => {
+            snapshot.docChanges().forEach((change) => {
+                if (change.type === 'added') {
+                    const post = change.doc.data();
+                    if (post.content.toLowerCase().includes('@isaac') || post.content.toLowerCase().includes('@bot')) {
+                        respondToMention(post, change.doc.id);
+                    }
+                }
+            });
+        });
+}
+
+// Função para responder a menções
+async function respondToMention(post, postId) {
+    try {
+        const response = await fetch(`${GEMINI_API_URL}?key=${GEMINI_API_KEY}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                contents: [{
+                    parts: [{
+                        text: `Você foi mencionado em um post no American Dev. Responda de forma útil e amigável como Isaac Bot: "${post.content}"`
+                    }]
+                }]
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (data.candidates && data.candidates[0] && data.candidates[0].content) {
+            const botResponse = data.candidates[0].content.parts[0].text;
+            
+            // Adicionar comentário automático
+            db.collection('posts').doc(postId).get()
+                .then((doc) => {
+                    if (doc.exists) {
+                        const postData = doc.data();
+                        const comments = postData.comments || [];
+                        
+                        const newComment = {
+                            userId: 'isaac-bot',
+                            userName: 'Isaac Bot',
+                            userPic: 'https://via.placeholder.com/32/4F46E5/ffffff?text=🤖',
+                            text: botResponse,
+                            timestamp: new Date(),
+                            isBot: true,
+                            verified: true
+                        };
+                        
+                        db.collection('posts').doc(postId).update({
+                            comments: [...comments, newComment]
+                        });
+                    }
+                });
+        }
+    } catch (error) {
+        console.error('Erro ao responder menção:', error);
+    }
+}
+
+// Função para trocar foto de perfil com link do Imgur
+function changeProfilePicWithLink() {
+    if (!currentUser) return;
+    
+    const imageUrl = prompt('Cole o link da imagem do Imgur:\n(Exemplo: https://imgur.com/abc123.jpg ou https://i.imgur.com/abc123.png)');
+    
+    if (!imageUrl) return;
+    
+    // Verificar se é do domínio Imgur
+    const imgurRegex = /^https?:\/\/(i\.)?imgur\.com\/[a-zA-Z0-9]+\.(jpg|jpeg|png|gif)$/i;
+    
+    if (!imgurRegex.test(imageUrl)) {
+        alert('Por favor, use apenas links do Imgur!\nFormato aceito: https://imgur.com/ID.jpg ou https://i.imgur.com/ID.png');
+        return;
+    }
+    
+    // Testar se a imagem carrega
+    const img = new Image();
+    img.onload = function() {
+        // Imagem carregou com sucesso, atualizar perfil
+        db.collection('users').doc(currentUser.uid).update({
+            profilePic: imageUrl
+        }).then(() => {
+            // Atualizar todas as imagens de perfil na interface
+            const profilePics = document.querySelectorAll('[id$="ProfilePic"]');
+            profilePics.forEach(pic => pic.src = imageUrl);
+            
+            alert('Foto de perfil atualizada com sucesso!');
+        }).catch((error) => {
+            console.error('Erro ao atualizar foto:', error);
+            alert('Erro ao atualizar foto de perfil');
+        });
+    };
+    
+    img.onerror = function() {
+        alert('Erro ao carregar a imagem. Verifique se o link está correto.');
+    };
+    
+    img.src = imageUrl;
+}
+
+// Atualizar a função renderPost para incluir badge de verificação
+function renderPost(post) {
+    const postsContainer = document.getElementById('postsContainer');
+    
+    // Get user info for the post
+    db.collection('users').doc(post.userId).get()
+        .then((userDoc) => {
+            if (userDoc.exists) {
+                const userData = userDoc.data();
+                
+                const postElement = document.createElement('div');
+                postElement.className = 'post-card animate-fadeIn';
+                
+                const timeAgo = post.timestamp ? getTimeAgo(post.timestamp.toDate()) : 'Agora';
+                
+                // Verificar se é post do bot
+                const isBot = post.isBot || post.userId === 'isaac-bot';
+                const verified = userData.verified || post.verified || isBot;
+                
+                postElement.innerHTML = `
+                    <div class="flex items-start space-x-4">
+                        <div class="relative">
+                            <img src="${userData.profilePic || post.userPic || 'https://via.placeholder.com/50'}" 
+                                 alt="Profile" class="profile-pic">
+                            <div class="${userData.isOnline ? 'online-indicator' : 'online-indicator offline-indicator'}"></div>
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex items-center space-x-2">
+                                <h4 class="font-semibold text-white">${userData.name || post.userName}</h4>
+                                ${verified ? '<svg viewBox="0 0 22 22" class="w-5 h-5 text-blue-500 ml-1" fill="currentColor"><path d="M22.25 12c0-1.43-.88-2.67-2.19-3.34.46-1.39.2-2.9-.81-3.91s-2.52-1.27-3.91-.81c-.67-1.31-1.91-2.19-3.34-2.19s-2.67.88-3.33 2.19c-1.4-.46-2.91-.2-3.92.81s-1.27 2.52-.8 3.91c-1.31.67-2.2 1.91-2.2 3.34s.89 2.67 2.2 3.33c-.47 1.39-.2 2.9.8 3.92s2.52 1.27 3.91.81c.67 1.31 1.91 2.19 3.34 2.19s2.67-.88 3.33-2.19c1.4.46 2.91.2 3.92-.81s1.27-2.52.81-3.91c1.31-.67 2.19-1.91 2.19-3.34zm-11.5 4.88L6.41 12.5l1.41-1.41L10.75 14.07l5.42-5.42 1.41 1.41-6.83 6.82z"/></svg>' : ''}
+                                <span class="text-gray-400 text-sm">@${userData.name.toLowerCase().replace(/\s+/g, '') || 'isaacbot'}</span>
+                                <span class="text-gray-500 text-sm">•</span>
+                                <span class="text-gray-500 text-sm">${timeAgo}</span>
+                                ${isBot ? '<span class="bg-blue-500 text-white px-2 py-1 rounded-full text-xs">BOT</span>' : ''}
+                            </div>
+                            <p class="text-gray-200 mt-2">${post.content}</p>
+                            
+                            <div class="flex items-center space-x-6 mt-4">
+                                <button onclick="reactToPost('${post.id}')" 
+                                        class="reaction-btn flex items-center space-x-2 text-gray-400 hover:text-red-400 transition">
+                                    <i class="fas fa-heart"></i>
+                                    <span id="reactions-${post.id}">${post.reactions || 0}</span>
+                                </button>
+                                <button onclick="toggleComments('${post.id}')" 
+                                        class="flex items-center space-x-2 text-gray-400 hover:text-blue-400 transition">
+                                    <i class="fas fa-comment"></i>
+                                    <span>${post.comments ? post.comments.length : 0}</span>
+                                </button>
+                                <button class="flex items-center space-x-2 text-gray-400 hover:text-green-400 transition">
+                                    <i class="fas fa-share"></i>
+                                    <span>Compartilhar</span>
+                                </button>
+                            </div>
+                            
+                            <div id="comments-${post.id}" class="hidden mt-4 space-y-3">
+                                <div class="flex space-x-3">
+                                    <img src="${document.getElementById('headerProfilePic').src}" 
+                                         alt="Profile" class="w-8 h-8 rounded-full">
+                                    <div class="flex-1">
+                                        <textarea id="comment-input-${post.id}" 
+                                                  placeholder="Escreva um comentário..." 
+                                                  class="w-full p-2 bg-gray-800 text-white rounded-lg border border-gray-600 focus:border-blue-500 resize-none" 
+                                                  rows="2"></textarea>
+                                        <button onclick="addComment('${post.id}')" 
+                                                class="mt-2 bg-blue-600 text-white px-4 py-1 rounded-lg text-sm hover:bg-blue-700 transition">
+                                            Comentar
+                                        </button>
+                                    </div>
+                                </div>
+                                <div id="comments-list-${post.id}">
+                                    <!-- Comments will be loaded here -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                postsContainer.appendChild(postElement);
+                
+                // Load comments for this post
+                loadComments(post.id);
+            }
+        });
+}
+
+// Inicializar o chat bot quando a página carregar
+document.addEventListener('DOMContentLoaded', function() {
+    // Criar componentes do bot
+    createChatBotButton();
+    createChatWindow();
+    
+    // Carregar estado do bot
+    const savedBotState = localStorage.getItem('botActive');
+    if (savedBotState !== null) {
+        botActive = JSON.parse(savedBotState);
+        toggleBotActive();
+    }
+    
+    // Iniciar verificação de menções
+    checkForBotMentions();
+    
+    // Criar posts automáticos do bot a cada 30 minutos
+    setInterval(createBotPost, 30 * 60 * 1000);
+});
+
+// Atualizar o sidebar para incluir a opção de trocar foto com link
+function updateSidebarWithImageLink() {
+    const sidebarContent = document.querySelector('#sidebar .space-y-4');
+    if (sidebarContent) {
+        const linkButton = document.createElement('button');
+        linkButton.onclick = changeProfilePicWithLink;
+        linkButton.className = 'w-full bg-purple-600 text-white py-3 rounded-lg hover:bg-purple-700 transition';
+        linkButton.innerHTML = '<i class="fas fa-link mr-2"></i>Trocar Foto (Link Imgur)';
+        
+        // Inserir após o botão de trocar foto existente
+        const changePhotoBtn = sidebarContent.querySelector('button[onclick="changeProfilePic()"]');
+        if (changePhotoBtn) {
+            changePhotoBtn.parentNode.insertBefore(linkButton, changePhotoBtn.nextSibling);
+        }
+    }
+}
+// Chamar a função para atualizar o sidebar
+setTimeout(updateSidebarWithImageLink, 1000);
+</script>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-storage-compat.js"></script>
+    
+    <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBO_lkHCi7QIOcE1vbNEtx3gknsDfZHAps",
+            authDomain: "banco-de-dadossy.firebaseapp.com",
+            projectId: "banco-de-dadossy",
+            storageBucket: "banco-de-dadossy.firebasestorage.app",
+            messagingSenderId: "1972078944",
+            appId: "1:1972078944:web:d5c938bb64f05448f87605",
+            measurementId: "G-R5DQCJ1N66"
+        };
+        
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+        const storage = firebase.storage();
+        
+        // Global Variables
+        let currentUser = null;
+        let isOnline = true;
+        let userReactions = new Map(); // Track user reactions per post
+        
+        // Bomb Posts Tags and Reactions
+        const bombPostsTags = [
+            '#WebDeveloper', '#DesenvolvimentoWeb', '#CriadorDeSites',
+            '#SitesProfissionais', '#DesignResponsivo', '#HTML', '#CSS', '#JavaScript',
+            '#ProgramadorWeb', '#FullStack', '#CodeLife', '#Tecnologia', '#Inovação',
+            '#MarketingDigital', '#NegócioOnline', '#FuturoÉDigital', '#SitesQueVendem',
+            '#PortfólioOnline', '#LandingPage', '#FreelancerWeb', '#Empreendedorismo',
+            '#TransformeSeuNegócio', '#WebDesignAngola', '#ProgramadorAngolano',
+            '#Compartilha', '#Curte', '#Segue', '#PartilhaIdeias', '#Viraliza', '#FazAcontecer'
+        ];
+        
+        const bombPostsReactions = [51, 78, 196, 126, 179, 431,388,1688,2674,6199,1799,8357];
+        
+        // Initialize App
+        document.addEventListener('DOMContentLoaded', function() {
+            // Sidebar Toggle
+            document.getElementById('sidebarToggle').addEventListener('click', function() {
+                document.getElementById('sidebar').classList.toggle('active');
+            });
+            
+            // Close sidebar when clicking outside
+            document.addEventListener('click', function(event) {
+                const sidebar = document.getElementById('sidebar');
+                const toggle = document.getElementById('sidebarToggle');
+                if (!sidebar.contains(event.target) && !toggle.contains(event.target)) {
+                    sidebar.classList.remove('active');
+                }
+            });
+            
+            // Profile Picture Input
+            document.getElementById('profilePicInput').addEventListener('change', function(event) {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        document.getElementById('profilePreview').src = e.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+            
+            // Load bomb posts
+            loadBombPosts();
+        });
+        
+        // Authentication Functions
+        function showLogin() {
+            document.getElementById('loginForm').classList.remove('hidden');
+            document.getElementById('registerForm').classList.add('hidden');
+        }
+        
+        function showRegister() {
+            document.getElementById('loginForm').classList.add('hidden');
+            document.getElementById('registerForm').classList.remove('hidden');
+        }
+        
+        function login() {
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            if (!email || !password) {
+                alert('Por favor, preencha todos os campos');
+                return;
+            }
+            
+            auth.signInWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    currentUser = userCredential.user;
+                    loadUserProfile();
+                    showMainApp();
+                })
+                .catch((error) => {
+                    alert('Erro ao fazer login: ' + error.message);
+                });
+        }
+        
+        function register() {
+            const name = document.getElementById('registerName').value;
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
+            
+            if (!name || !email || !password) {
+                alert('Por favor, preencha todos os campos');
+                return;
+            }
+            
+            auth.createUserWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    currentUser = userCredential.user;
+                    // Save user profile to Firestore
+                    db.collection('users').doc(currentUser.uid).set({
+                        name: name,
+                        email: email,
+                        profilePic: 'https://imgur.com/702jMhU.jpg',
+                        isOnline: true,
+                        balance: 1600,
+                        verified: false,
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                    showProfileSetup();
+                })
+                .catch((error) => {
+                    alert('Erro ao registrar: ' + error.message);
+                });
+        }
+        
+        function showProfileSetup() {
+            document.getElementById('authScreen').classList.add('hidden');
+            document.getElementById('profileSetup').classList.remove('hidden');
+        }
+        
+        function selectProfilePic() {
+            document.getElementById('profilePicInput').click();
+        }
+        
+        function skipProfilePic() {
+            showMainApp();
+        }
+        
+        function showMainApp() {
+            document.getElementById('authScreen').classList.add('hidden');
+            document.getElementById('profileSetup').classList.add('hidden');
+            document.getElementById('mainApp').classList.remove('hidden');
+            loadFeed();
+        }
+        
+        // Profile Functions
+        function loadUserProfile() {
+            if (!currentUser) return;
+            
+            db.collection('users').doc(currentUser.uid).get()
+                .then((doc) => {
+                    if (doc.exists) {
+                        const userData = doc.data();
+                        updateProfileUI(userData);
+                    }
+                });
+        }
+        
+        function updateProfileUI(userData) {
+            const profilePics = document.querySelectorAll('[id$="ProfilePic"]');
+            const userNames = document.querySelectorAll('[id$="UserName"]');
+            const profileNames = document.querySelectorAll('[id$="PageName"]');
+            
+            profilePics.forEach(pic => pic.src = userData.profilePic || 'https://via.placeholder.com/150');
+            userNames.forEach(name => name.textContent = userData.name || 'Usuário');
+            profileNames.forEach(name => name.textContent = userData.name || 'Usuário');
+            
+            // Update online status
+            updateOnlineStatus(userData.isOnline);
+            
+            // Update member since
+            if (userData.createdAt) {
+                const date = userData.createdAt.toDate();
+                document.getElementById('memberSince').textContent = date.toLocaleDateString('pt-BR');
+            }
+        }
+        
+        function updateOnlineStatus(online) {
+            isOnline = online;
+            const statusIndicators = document.querySelectorAll('[id$="OnlineStatus"]');
+            const toggleBtn = document.getElementById('toggleOnlineStatus');
+            
+            statusIndicators.forEach(indicator => {
+                indicator.className = online ? 'online-indicator' : 'online-indicator offline-indicator';
+            });
+            
+            if (toggleBtn) {
+                toggleBtn.innerHTML = online ? '<i class="fas fa-power-off"></i>' : '<i class="fas fa-power-off"></i>';
+                toggleBtn.className = online ? 'bg-green-500 text-white px-4 py-2 rounded-lg' : 'bg-red-500 text-white px-4 py-2 rounded-lg';
+            }
+        }
+        
+        function toggleOnlineStatus() {
+            if (!currentUser) return;
+            
+            isOnline = !isOnline;
+            db.collection('users').doc(currentUser.uid).update({
+                isOnline: isOnline
+            });
+            updateOnlineStatus(isOnline);
+        }
+        
+        function changeProfilePic() {
+            document.getElementById('profilePicInput').click();
+        }
+        
+        // Navigation Functions
+        function showFeed() {
+            document.getElementById('feedSection').classList.remove('hidden');
+            document.getElementById('friendsSection').classList.add('hidden');
+            document.getElementById('profileSection').classList.add('hidden');
+            
+            // Update nav buttons
+            document.getElementById('feedBtn').className = 'text-blue-400 border-b-2 border-blue-400 pb-2 px-4 font-semibold';
+            document.getElementById('friendsBtn').className = 'text-gray-400 hover:text-white pb-2 px-4 font-semibold transition';
+            document.getElementById('profileBtn').className = 'text-gray-400 hover:text-white pb-2 px-4 font-semibold transition';
+        }
+        
+        function showFriends() {
+            document.getElementById('feedSection').classList.add('hidden');
+            document.getElementById('friendsSection').classList.remove('hidden');
+            document.getElementById('profileSection').classList.add('hidden');
+            
+            // Update nav buttons
+            document.getElementById('feedBtn').className = 'text-gray-400 hover:text-white pb-2 px-4 font-semibold transition';
+            document.getElementById('friendsBtn').className = 'text-blue-400 border-b-2 border-blue-400 pb-2 px-4 font-semibold';
+            document.getElementById('profileBtn').className = 'text-gray-400 hover:text-white pb-2 px-4 font-semibold transition';
+            
+            loadFriends();
+        }
+        
+        function showProfile() {
+            document.getElementById('feedSection').classList.add('hidden');
+            document.getElementById('friendsSection').classList.add('hidden');
+            document.getElementById('profileSection').classList.remove('hidden');
+            
+            // Update nav buttons
+            document.getElementById('feedBtn').className = 'text-gray-400 hover:text-white pb-2 px-4 font-semibold transition';
+        
+            document.getElementById('friendsBtn').className = 'text-gray-400 hover:text-white pb-2 px-4 font-semibold transition';
+            document.getElementById('profileBtn').className = 'text-blue-400 border-b-2 border-blue-400 pb-2 px-4 font-semibold';
+        }
+        
+        // Posts Functions
+        function createPost() {
+            const content = document.getElementById('postContent').value;
+            if (!content.trim()) {
+                alert('Por favor, escreva algo para publicar');
+                return;
+            }
+            
+            if (!currentUser) return;
+            
+            db.collection('posts').add({
+                userId: currentUser.uid,
+                content: content,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                reactions: 0,
+                comments: [],
+                userReactions: []
+            }).then(() => {
+                document.getElementById('postContent').value = '';
+                loadFeed();
+            }).catch((error) => {
+                console.error('Erro ao criar post:', error);
+            });
+        }
+        
+        function loadFeed() {
+            const postsContainer = document.getElementById('postsContainer');
+            postsContainer.innerHTML = '';
+            
+            db.collection('posts')
+                .orderBy('timestamp', 'desc')
+                .get()
+                .then((querySnapshot) => {
+                    querySnapshot.forEach((doc) => {
+                        const post = doc.data();
+                        post.id = doc.id;
+                        renderPost(post);
+                    });
+                });
+        }
+        
+        function renderPost(post) {
+            const postsContainer = document.getElementById('postsContainer');
+            
+            // Get user info for the post
+            db.collection('users').doc(post.userId).get()
+                .then((userDoc) => {
+                    if (userDoc.exists) {
+                        const userData = userDoc.data();
+                        
+                        const postElement = document.createElement('div');
+                        postElement.className = 'post-card animate-fadeIn';
+                        
+                        const timeAgo = post.timestamp ? getTimeAgo(post.timestamp.toDate()) : 'Agora';
+                        
+                        postElement.innerHTML = `
+                            <div class="flex items-start space-x-4">
+                                <div class="relative">
+                                    <img src="${userData.profilePic || 'https://via.placeholder.com/50'}" 
+                                         alt="Profile" class="profile-pic">
+                                    <div class="${userData.isOnline ? 'online-indicator' : 'online-indicator offline-indicator'}"></div>
+                                </div>
+                                <div class="flex-1">
+                                    <div class="flex items-center space-x-2">
+                                        <h4 class="font-semibold text-white">${userData.name}</h4>
+                                        ${userData.verified ? '<svg viewBox="0 0 22 22" class="w-5 h-5 text-blue-500 ml-1" fill="currentColor"><path d="M22.25 12c0-1.43-.88-2.67-2.19-3.34.46-1.39.2-2.9-.81-3.91s-2.52-1.27-3.91-.81c-.67-1.31-1.91-2.19-3.34-2.19s-2.67.88-3.33 2.19c-1.4-.46-2.91-.2-3.92.81s-1.27 2.52-.8 3.91c-1.31.67-2.2 1.91-2.2 3.34s.89 2.67 2.2 3.33c-.47 1.39-.2 2.9.8 3.92s2.52 1.27 3.91.81c.67 1.31 1.91 2.19 3.34 2.19s2.67-.88 3.33-2.19c1.4.46 2.91.2 3.92-.81s1.27-2.52.81-3.91c1.31-.67 2.19-1.91 2.19-3.34zm-11.5 4.88L6.41 12.5l1.41-1.41L10.75 14.07l5.42-5.42 1.41 1.41-6.83 6.82z"/></svg></span>' : ''}
+                         
+       
+                      <span class="text-gray-400 text-sm">@${userData.name.toLowerCase().replace(/\s+/g, '')}</span>
+                                        <span class="text-gray-500 text-sm">•</span>
+                                        <span class="text-gray-500 text-sm">${timeAgo}</span>
+                                    </div>
+                                    <p class="text-gray-200 mt-2">${post.content}</p>
+                                    
+                                    <div class="flex items-center space-x-6 mt-4">
+                                        <button onclick="reactToPost('${post.id}')" 
+                                                class="reaction-btn flex items-center space-x-2 text-gray-400 hover:text-red-400 transition">
+                                            <i class="fas fa-heart"></i>
+                                            <span id="reactions-${post.id}">${post.reactions || 0}</span>
+                                        </button>
+                                        <button onclick="toggleComments('${post.id}')" 
+                                                class="flex items-center space-x-2 text-gray-400 hover:text-blue-400 transition">
+                                            <i class="fas fa-comment"></i>
+                                            <span>${post.comments ? post.comments.length : 0}</span>
+                                        </button>
+                                        <button class="flex items-center space-x-2 text-gray-400 hover:text-green-400 transition">
+                                            <i class="fas fa-share"></i>
+                                            <span>Compartilhar</span>
+                                        </button>
+                                    </div>
+                                    
+                                    <div id="comments-${post.id}" class="hidden mt-4 space-y-3">
+                                        <div class="flex space-x-3">
+                                            <img src="${document.getElementById('headerProfilePic').src}" 
+                                                 alt="Profile" class="w-8 h-8 rounded-full">
+                                            <div class="flex-1">
+                                                <textarea id="comment-input-${post.id}" 
+                                                          placeholder="Escreva um comentário..." 
+                                                          class="w-full p-2 bg-gray-800 text-white rounded-lg border border-gray-600 focus:border-blue-500 resize-none" 
+                                                          rows="2"></textarea>
+                                                <button onclick="addComment('${post.id}')" 
+                                                        class="mt-2 bg-blue-600 text-white px-4 py-1 rounded-lg text-sm hover:bg-blue-700 transition">
+                                                    Comentar
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div id="comments-list-${post.id}">
+                                            <!-- Comments will be loaded here -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                        
+                        postsContainer.appendChild(postElement);
+                        
+                        // Load comments for this post
+                        loadComments(post.id);
+                    }
+                });
+        }
+        
+        function reactToPost(postId) {
+            if (!currentUser) return;
+            
+            const userReactionKey = `${currentUser.uid}-${postId}`;
+            
+            // Check if user already reacted
+            if (userReactions.has(userReactionKey)) {
+                alert('Você já reagiu a este post');
+                return;
+            }
+            
+            // Add reaction
+            userReactions.set(userReactionKey, true);
+            
+            db.collection('posts').doc(postId).get()
+                .then((doc) => {
+                    if (doc.exists) {
+                        const post = doc.data();
+                        const currentReactions = post.reactions || 0;
+                        const userReactionsList = post.userReactions || [];
+                        
+                        // Update post with new reaction
+                        db.collection('posts').doc(postId).update({
+                            reactions: currentReactions + 1,
+                            userReactions: [...userReactionsList, currentUser.uid]
+                        });
+                        
+                        // Update UI
+                        const reactionElement = document.getElementById(`reactions-${postId}`);
+                        if (reactionElement) {
+                            reactionElement.textContent = currentReactions + 1;
+                            reactionElement.parentElement.classList.add('active');
+                        }
+                    }
+                });
+        }
+        
+        function toggleComments(postId) {
+            const commentsDiv = document.getElementById(`comments-${postId}`);
+            if (commentsDiv.classList.contains('hidden')) {
+                commentsDiv.classList.remove('hidden');
+                loadComments(postId);
+            } else {
+                commentsDiv.classList.add('hidden');
+            }
+        }
+        
+        function addComment(postId) {
+            const commentInput = document.getElementById(`comment-input-${postId}`);
+            const commentText = commentInput.value.trim();
+            
+            if (!commentText) {
+                alert('Por favor, escreva um comentário');
+                return;
+            }
+            
+            if (!currentUser) return;
+            
+            db.collection('users').doc(currentUser.uid).get()
+                .then((userDoc) => {
+                    if (userDoc.exists) {
+                        const userData = userDoc.data();
+                        
+                        db.collection('posts').doc(postId).get()
+                            .then((doc) => {
+                                if (doc.exists) {
+                                    const post = doc.data();
+                                    const comments = post.comments || [];
+                                    
+                                    const newComment = {
+                                        userId: currentUser.uid,
+                                        userName: userData.name,
+                                        userPic: userData.profilePic,
+                                        text: commentText,
+                                        timestamp: new Date()
+                                    };
+                                    
+                                    db.collection('posts').doc(postId).update({
+                                        comments: [...comments, newComment]
+                                    });
+                                    
+                                    commentInput.value = '';
+                                    loadComments(postId);
+                                }
+                            });
+                    }
+                });
+        }
+        
+        function loadComments(postId) {
+            db.collection('posts').doc(postId).get()
+                .then((doc) => {
+                    if (doc.exists) {
+                        const post = doc.data();
+                        const comments = post.comments || [];
+                        const commentsListDiv = document.getElementById(`comments-list-${postId}`);
+                        
+                        if (commentsListDiv) {
+                            commentsListDiv.innerHTML = '';
+                            
+                            comments.forEach((comment) => {
+                                const commentElement = document.createElement('div');
+                                commentElement.className = 'flex space-x-3 bg-gray-800 p-3 rounded-lg';
+                                
+                                const timeAgo = getTimeAgo(comment.timestamp);
+                                
+                                commentElement.innerHTML = `
+                                    <img src="${comment.userPic || 'https://via.placeholder.com/32'}" 
+                                         alt="Profile" class="w-8 h-8 rounded-full">
+                                    <div class="flex-1">
+                                        <div class="flex items-center space-x-2">
+                                            <h5 class="font-semibold text-white text-sm">${comment.userName}</h5>
+                                            <span class="text-gray-500 text-xs">${timeAgo}</span>
+                                        </div>
+                                        <p class="text-gray-200 text-sm mt-1">${comment.text}</p>
+                                    </div>
+                                `;
+                                
+                                commentsListDiv.appendChild(commentElement);
+                            });
+                        }
+                    }
+                });
+        }
+        
+        // Friends Functions
+        function loadFriends() {
+            const friendsList = document.getElementById('friendsList');
+            friendsList.innerHTML = '';
+            
+            db.collection('users')
+                .where('email', '!=', currentUser ? currentUser.email : '')
+                .get()
+                .then((querySnapshot) => {
+                    querySnapshot.forEach((doc) => {
+                        const userData = doc.data();
+                        userData.id = doc.id;
+                        renderFriend(userData);
+                    });
+                });
+        }
+        
+        function renderFriend(user) {
+            const friendsList = document.getElementById('friendsList');
+            
+            const friendElement = document.createElement('div');
+            friendElement.className = 'glass-effect p-4 rounded-lg animate-fadeIn';
+            
+            friendElement.innerHTML = `
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-4">
+                        <div class="relative">
+                            <img src="${user.profilePic || 'https://via.placeholder.com/50'}" 
+                                 alt="Profile" class="profile-pic">
+                            <div class="${user.isOnline ? 'online-indicator' : 'online-indicator offline-indicator'}"></div>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-white flex items-center">
+                                ${user.name}
+                                ${user.verified ? '<span class="verified-badge ml-2"><i class="fas fa-check text-white text-xs"></i></span>' : ''}
+                            </h4>
+                            <p class="text-gray-400 text-sm">@${user.name.toLowerCase().replace(/\s+/g, '')}</p>
+                            <p class="text-gray-500 text-xs">${user.isOnline ? 'Online' : 'Offline'}</p>
+                        </div>
+                    </div>
+                    <button onclick="addFriend('${user.id}')" 
+                            class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
+                        <i class="fas fa-user-plus mr-2"></i>Adicionar
+                    </button>
+                </div>
+            `;
+            
+            friendsList.appendChild(friendElement);
+        }
+        
+        function addFriend(userId) {
+            if (!currentUser) return;
+            
+            // Add to friends collection
+            db.collection('friendships').add({
+                userId1: currentUser.uid,
+                userId2: userId,
+                status: 'pending',
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            }).then(() => {
+                alert('Solicitação de amizade enviada!');
+                loadFriends();
+            }).catch((error) => {
+                console.error('Erro ao adicionar amigo:', error);
+            });
+        }
+        
+        // Bomb Posts Functions
+        function loadBombPosts() {
+            const bombPosts = [
+                {
+                    content: "🚀 Desenvolvendo o futuro da web, um código por vez! #WebDeveloper #CodeLife #Inovação",
+                    reactions: 51,
+                    author: "DevMaster",
+                    verified: true
+                }         ];
+            
+            const postsContainer = document.getElementById('postsContainer');
+            
+            bombPosts.forEach((post, index) => {
+                setTimeout(() => {
+                    const postElement = document.createElement('div');
+                    postElement.className = 'post-card animate-fadeIn';
+                    
+                    const timeAgo = `${Math.floor(Math.random() * 24) + 1}h`;
+                    
+                    postElement.innerHTML = `
+                        <div class="flex items-start space-x-4">
+                            <div class="relative">
+                                <img src="https://via.placeholder.com/50/667eea/ffffff?text=${post.author[0]}" 
+                                     alt="Profile" class="profile-pic">
+                                <div class="online-indicator"></div>
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex items-center space-x-2">
+                                    <h4 class="font-semibold text-white">${post.author}</h4>
+                                    ${post.verified ? '<span class="verified-badge"><i class="fas fa-check text-white text-xs"></i></span>' : ''}
+                                    <span class="text-gray-400 text-sm">@${post.author.toLowerCase()}</span>
+                                    <span class="text-gray-500 text-sm">•</span>
+                                    <span class="text-gray-500 text-sm">${timeAgo}</span>
+                                </div>
+                                <p class="text-gray-200 mt-2">${post.content}</p>
+                                
+                                <div class="flex items-center space-x-6 mt-4">
+                                    <div class="flex items-center space-x-2 text-red-400">
+                                        <i class="fas fa-heart"></i>
+                                        <span class="animate-pulse-custom">${post.reactions}</span>
+                                    </div>
+                                    <div class="flex items-center space-x-2 text-gray-400">
+                                        <i class="fas fa-comment"></i>
+                                        <span>${Math.floor(Math.random() * 20) + 1}</span>
+                                    </div>
+                                    <div class="flex items-center space-x-2 text-gray-400">
+                                        <i class="fas fa-share"></i>
+                                        <span>Compartilhar</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    
+                    postsContainer.appendChild(postElement);
+                }, index * 1000); // Stagger the posts
+            });
+        }
+        
+        // Utility Functions
+        function getTimeAgo(date) {
+            const now = new Date();
+            const diffInSeconds = Math.floor((now - date) / 1000);
+            
+            if (diffInSeconds < 60) return 'Agora';
+            if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)}m`;
+            if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)}h`;
+            return `${Math.floor(diffInSeconds / 86400)}d`;
+        }
+        
+        // Auto-update reactions for bomb posts
+        setInterval(() => {
+            const reactionElements = document.querySelectorAll('[id^="reactions-"]');
+            reactionElements.forEach(element => {
+                const currentReactions = parseInt(element.textContent);
+                if (Math.random() < 0.1) { // 10% chance to increase
+                    element.textContent = currentReactions + 1;
+                    element.classList.add('animate-pulse-custom');
+                    setTimeout(() => {
+                        element.classList.remove('animate-pulse-custom');
+                    }, 2000);
+                }
+            });
+        }, 5000);
+        
+// Adicionar após as variáveis globais existentes
+let currentChannel = null;
+let userChannels = new Map();
+let channelFollowers = new Map();
+
+// Emails dos administradores para verificação
+const adminEmails = [
+    'empresadev@gmail.com',
+    'paulo@gmail.com',
+    'isaacmuaco172@gmail.com',
+    'isaacmuaco582@gmail.com',
+    'isaacmuaco2@gmail.com',
+    'isaacmub82@gmail.com',
+    'isaacofficialdev@gmail.com'
+];
+
+// Adicionar após as funções de navegação existentes
+function showChannels() {
+    document.getElementById('feedSection').classList.add('hidden');
+    document.getElementById('friendsSection').classList.add('hidden');
+    document.getElementById('profileSection').classList.add('hidden');
+    document.getElementById('channelsSection').classList.remove('hidden');
+    
+    // Update nav buttons
+    document.getElementById('feedBtn').className = 'text-gray-400 hover:text-white pb-2 px-4 font-semibold transition';
+    document.getElementById('friendsBtn').className = 'text-gray-400 hover:text-white pb-2 px-4 font-semibold transition';
+    document.getElementById('profileBtn').className = 'text-gray-400 hover:text-white pb-2 px-4 font-semibold transition';
+    document.getElementById('channelsBtn').className = 'text-blue-400 border-b-2 border-blue-400 pb-2 px-4 font-semibold';
+    
+    loadChannels();
+}
+
+// Funções de Canal
+function createChannel() {
+    const channelName = document.getElementById('channelName').value;
+    const channelDescription = document.getElementById('channelDescription').value;
+    const isPublic = document.getElementById('channelPublic').checked;
+    
+    if (!channelName.trim()) {
+        alert('Por favor, insira um nome para o canal');
+        return;
+    }
+    
+    if (!currentUser) return;
+    
+    db.collection('channels').add({
+        name: channelName,
+        description: channelDescription,
+        adminId: currentUser.uid,
+        isPublic: isPublic,
+        followers: [],
+        posts: [],
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    }).then(() => {
+        document.getElementById('channelName').value = '';
+        document.getElementById('channelDescription').value = '';
+        document.getElementById('channelPublic').checked = true;
+        closeCreateChannelModal();
+        loadChannels();
+    }).catch((error) => {
+        console.error('Erro ao criar canal:', error);
+    });
+}
+
+function loadChannels() {
+    const channelsList = document.getElementById('channelsList');
+    channelsList.innerHTML = '';
+    
+    db.collection('channels')
+        .orderBy('createdAt', 'desc')
+        .get()
+        .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+                const channel = doc.data();
+                channel.id = doc.id;
+                renderChannel(channel);
+            });
+        });
+}
+
+function renderChannel(channel) {
+    const channelsList = document.getElementById('channelsList');
+    
+    // Get admin info
+    db.collection('users').doc(channel.adminId).get()
+        .then((userDoc) => {
+            if (userDoc.exists) {
+                const adminData = userDoc.data();
+                
+                const isFollowing = channel.followers && channel.followers.includes(currentUser.uid);
+                const isAdmin = channel.adminId === currentUser.uid;
+                
+                const channelElement = document.createElement('div');
+                channelElement.className = 'glass-effect p-6 rounded-lg animate-fadeIn';
+                
+                channelElement.innerHTML = `
+                    <div class="flex items-start justify-between">
+                        <div class="flex-1">
+                            <div class="flex items-center space-x-3">
+                                <div class="relative">
+                                    <img src="${adminData.profilePic || 'https://via.placeholder.com/50'}" 
+                                         alt="Admin" class="w-12 h-12 rounded-full border-2 border-blue-500">
+                                    <div class="${adminData.isOnline ? 'online-indicator' : 'online-indicator offline-indicator'}"></div>
+                                </div>
+                                <div>
+                                    <h3 class="text-xl font-bold text-white flex items-center">
+                                        ${channel.name}
+                                        ${channel.isPublic ? '<i class="fas fa-globe text-green-400 ml-2"></i>' : '<i class="fas fa-lock text-red-400 ml-2"></i>'}
+                                    </h3>
+                                    <p class="text-gray-300 flex items-center">
+                                        Por ${adminData.name}
+                                        ${adminData.verified ? '<svg viewBox="0 0 22 22" class="w-5 h-5 text-blue-500 ml-1" fill="currentColor"><path d="M22.25 12c0-1.43-.88-2.67-2.19-3.34.46-1.39.2-2.9-.81-3.91s-2.52-1.27-3.91-.81c-.67-1.31-1.91-2.19-3.34-2.19s-2.67.88-3.33 2.19c-1.4-.46-2.91-.2-3.92.81s-1.27 2.52-.8 3.91c-1.31.67-2.2 1.91-2.2 3.34s.89 2.67 2.2 3.33c-.47 1.39-.2 2.9.8 3.92s2.52 1.27 3.91.81c.67 1.31 1.91 2.19 3.34 2.19s2.67-.88 3.33-2.19c1.4.46 2.91.2 3.92-.81s1.27-2.52.81-3.91c1.31-.67 2.19-1.91 2.19-3.34zm-11.5 4.88L6.41 12.5l1.41-1.41L10.75 14.07l5.42-5.42 1.41 1.41-6.83 6.82z"/></svg>' : ''}
+                                    </p>
+                                    <p class="text-gray-400 text-sm">${channel.description || 'Sem descrição'}</p>
+                                    <p class="text-gray-500 text-xs mt-1">
+                                        <i class="fas fa-users mr-1"></i>
+                                        ${channel.followers ? channel.followers.length : 0} seguidores
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex flex-col space-y-2">
+                            ${!isAdmin ? `
+                                <button onclick="toggleFollowChannel('${channel.id}', ${isFollowing})" 
+                                        class="${isFollowing ? 'bg-red-600 hover:bg-red-700' : 'bg-blue-600 hover:bg-blue-700'} text-white px-4 py-2 rounded-lg transition">
+                                    <i class="fas ${isFollowing ? 'fa-user-minus' : 'fa-user-plus'} mr-2"></i>
+                                    ${isFollowing ? 'Deixar de Seguir' : 'Seguir'}
+                                </button>
+                            ` : `
+                                <button onclick="showChannelSettings('${channel.id}')" 
+                                        class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition">
+                                    <i class="fas fa-cog mr-2"></i>Configurações
+                                </button>
+                            `}
+                            
+                            <button onclick="enterChannel('${channel.id}')" 
+                                    class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg transition">
+                                <i class="fas fa-sign-in-alt mr-2"></i>Entrar
+                            </button>
+                        </div>
+                    </div>
+                `;
+                
+                channelsList.appendChild(channelElement);
+            }
+        });
+}
+
+function toggleFollowChannel(channelId, isFollowing) {
+    if (!currentUser) return;
+    
+    db.collection('channels').doc(channelId).get()
+        .then((doc) => {
+            if (doc.exists) {
+                const channel = doc.data();
+                let followers = channel.followers || [];
+                
+                if (isFollowing) {
+                    followers = followers.filter(id => id !== currentUser.uid);
+                } else {
+                    followers.push(currentUser.uid);
+                }
+                
+                db.collection('channels').doc(channelId).update({
+                    followers: followers
+                });
+                
+                loadChannels();
+            }
+        });
+}
+
+function enterChannel(channelId) {
+    currentChannel = channelId;
+    
+    // Hide channels section and show channel feed
+    document.getElementById('channelsSection').classList.add('hidden');
+    document.getElementById('channelFeedSection').classList.remove('hidden');
+    
+    loadChannelInfo(channelId);
+    loadChannelPosts(channelId);
+}
+
+function loadChannelInfo(channelId) {
+    db.collection('channels').doc(channelId).get()
+        .then((doc) => {
+            if (doc.exists) {
+                const channel = doc.data();
+                
+                db.collection('users').doc(channel.adminId).get()
+                    .then((userDoc) => {
+                        if (userDoc.exists) {
+                            const adminData = userDoc.data();
+                            
+                            document.getElementById('channelTitle').textContent = channel.name;
+                            document.getElementById('channelAdmin').innerHTML = `
+                                Por ${adminData.name}
+                                ${adminData.verified ? '<svg viewBox="0 0 22 22" class="w-5 h-5 text-blue-500 ml-1 inline" fill="currentColor"><path d="M22.25 12c0-1.43-.88-2.67-2.19-3.34.46-1.39.2-2.9-.81-3.91s-2.52-1.27-3.91-.81c-.67-1.31-1.91-2.19-3.34-2.19s-2.67.88-3.33 2.19c-1.4-.46-2.91-.2-3.92.81s-1.27 2.52-.8 3.91c-1.31.67-2.2 1.91-2.2 3.34s.89 2.67 2.2 3.33c-.47 1.39-.2 2.9.8 3.92s2.52 1.27 3.91.81c.67 1.31 1.91 2.19 3.34 2.19s2.67-.88 3.33-2.19c1.4.46 2.91.2 3.92-.81s1.27-2.52.81-3.91c1.31-.67 2.19-1.91 2.19-3.34zm-11.5 4.88L6.41 12.5l1.41-1.41L10.75 14.07l5.42-5.42 1.41 1.41-6.83 6.82z"/></svg>' : ''}
+                            `;
+                            document.getElementById('channelDescription').textContent = channel.description || 'Sem descrição';
+                            document.getElementById('channelFollowers').textContent = `${channel.followers ? channel.followers.length : 0} seguidores`;
+                            
+                            // Show/hide post creation based on permissions
+                            const canPost = channel.adminId === currentUser.uid || 
+                                           (channel.isPublic && channel.followers && channel.followers.includes(currentUser.uid));
+                            
+                            const postCreation = document.getElementById('channelPostCreation');
+                            if (canPost) {
+                                postCreation.classList.remove('hidden');
+                            } else {
+                                postCreation.classList.add('hidden');
+                            }
+                        }
+                    });
+            }
+        });
+}
+
+function createChannelPost() {
+    const content = document.getElementById('channelPostContent').value;
+    if (!content.trim()) {
+        alert('Por favor, escreva algo para publicar');
+        return;
+    }
+    
+    if (!currentUser || !currentChannel) return;
+    
+    db.collection('channelPosts').add({
+        channelId: currentChannel,
+        userId: currentUser.uid,
+        content: content,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+        reactions: 0,
+        comments: [],
+        userReactions: []
+    }).then(() => {
+        document.getElementById('channelPostContent').value = '';
+        loadChannelPosts(currentChannel);
+    }).catch((error) => {
+        console.error('Erro ao criar post do canal:', error);
+    });
+}
+
+function loadChannelPosts(channelId) {
+    const postsContainer = document.getElementById('channelPostsContainer');
+    postsContainer.innerHTML = '';
+    
+    db.collection('channelPosts')
+        .where('channelId', '==', channelId)
+        .orderBy('timestamp', 'desc')
+        .get()
+        .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+                const post = doc.data();
+                post.id = doc.id;
+                renderChannelPost(post);
+            });
+        });
+}
+
+function renderChannelPost(post) {
+    const postsContainer = document.getElementById('channelPostsContainer');
+    
+    db.collection('users').doc(post.userId).get()
+        .then((userDoc) => {
+            if (userDoc.exists) {
+                const userData = userDoc.data();
+                
+                const postElement = document.createElement('div');
+                postElement.className = 'post-card animate-fadeIn';
+                
+                const timeAgo = post.timestamp ? getTimeAgo(post.timestamp.toDate()) : 'Agora';
+                
+                postElement.innerHTML = `
+                    <div class="flex items-start space-x-4">
+                        <div class="relative">
+                            <img src="${userData.profilePic || 'https://via.placeholder.com/50'}" 
+                                 alt="Profile" class="profile-pic">
+                            <div class="${userData.isOnline ? 'online-indicator' : 'online-indicator offline-indicator'}"></div>
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex items-center space-x-2">
+                                <h4 class="font-semibold text-white">${userData.name}</h4>
+                                ${userData.verified ? '<svg viewBox="0 0 22 22" class="w-5 h-5 text-blue-500 ml-1" fill="currentColor"><path d="M22.25 12c0-1.43-.88-2.67-2.19-3.34.46-1.39.2-2.9-.81-3.91s-2.52-1.27-3.91-.81c-.67-1.31-1.91-2.19-3.34-2.19s-2.67.88-3.33 2.19c-1.4-.46-2.91-.2-3.92.81s-1.27 2.52-.8 3.91c-1.31.67-2.2 1.91-2.2 3.34s.89 2.67 2.2 3.33c-.47 1.39-.2 2.9.8 3.92s2.52 1.27 3.91.81c.67 1.31 1.91 2.19 3.34 2.19s2.67-.88 3.33-2.19c1.4.46 2.91.2 3.92-.81s1.27-2.52.81-3.91c1.31-.67 2.19-1.91 2.19-3.34zm-11.5 4.88L6.41 12.5l1.41-1.41L10.75 14.07l5.42-5.42 1.41 1.41-6.83 6.82z"/></svg>' : ''}
+                                <span class="text-gray-400 text-sm">@${userData.name.toLowerCase().replace(/\s+/g, '')}</span>
+                                <span class="text-gray-500 text-sm">•</span>
+                                <span class="text-gray-500 text-sm">${timeAgo}</span>
+                            </div>
+                            <p class="text-gray-200 mt-2">${post.content}</p>
+                            
+                            <div class="flex items-center space-x-6 mt-4">
+                                <button onclick="reactToChannelPost('${post.id}')" 
+                                        class="reaction-btn flex items-center space-x-2 text-gray-400 hover:text-red-400 transition">
+                                    <i class="fas fa-heart"></i>
+                                    <span id="channel-reactions-${post.id}">${post.reactions || 0}</span>
+                                </button>
+                                <button onclick="toggleChannelComments('${post.id}')" 
+                                        class="flex items-center space-x-2 text-gray-400 hover:text-blue-400 transition">
+                                    <i class="fas fa-comment"></i>
+                                    <span>${post.comments ? post.comments.length : 0}</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                postsContainer.appendChild(postElement);
+            }
+        });
+}
+
+function reactToChannelPost(postId) {
+    if (!currentUser) return;
+    
+    const userReactionKey = `${currentUser.uid}-${postId}`;
+    
+    if (userReactions.has(userReactionKey)) {
+        alert('Você já reagiu a este post');
+        return;
+    }
+    
+    userReactions.set(userReactionKey, true);
+    
+    db.collection('channelPosts').doc(postId).get()
+        .then((doc) => {
+            if (doc.exists) {
+                const post = doc.data();
+                const currentReactions = post.reactions || 0;
+                const userReactionsList = post.userReactions || [];
+                
+                db.collection('channelPosts').doc(postId).update({
+                    reactions: currentReactions + 1,
+                    userReactions: [...userReactionsList, currentUser.uid]
+                });
+                
+                const reactionElement = document.getElementById(`channel-reactions-${postId}`);
+                if (reactionElement) {
+                    reactionElement.textContent = currentReactions + 1;
+                    reactionElement.parentElement.classList.add('active');
+                }
+            }
+        });
+}
+
+function backToChannels() {
+    document.getElementById('channelFeedSection').classList.add('hidden');
+    document.getElementById('channelsSection').classList.remove('hidden');
+    currentChannel = null;
+}
+
+function showChannelSettings(channelId) {
+    // Implementar configurações do canal
+    alert('Configurações do canal em desenvolvimento');
+}
+
+function showCreateChannelModal() {
+    document.getElementById('createChannelModal').classList.remove('hidden');
+}
+
+function closeCreateChannelModal() {
+    document.getElementById('createChannelModal').classList.add('hidden');
+}
+
+// Sistema de Verificação
+function showVerificationModal() {
+    document.getElementById('verificationModal').classList.remove('hidden');
+}
+
+function closeVerificationModal() {
+    document.getElementById('verificationModal').classList.add('hidden');
+}
+
+function submitVerificationRequest() {
+    const fullName = document.getElementById('verificationFullName').value;
+    const email = document.getElementById('verificationEmail').value;
+    const reason = document.getElementById('verificationReason').value;
+    const category = document.getElementById('verificationCategory').value;
+    const socialLinks = document.getElementById('verificationSocialLinks').value;
+    
+    if (!fullName || !email || !reason || !category) {
+        alert('Por favor, preencha todos os campos obrigatórios');
+        return;
+    }
+    
+    if (!currentUser) return;
+    
+    // Criar solicitação de verificação
+    const verificationData = {
+        userId: currentUser.uid,
+        fullName: fullName,
+        email: email,
+        reason: reason,
+        category: category,
+        socialLinks: socialLinks,
+        status: 'pending',
+        submittedAt: firebase.firestore.FieldValue.serverTimestamp()
+    };
+    
+    db.collection('verificationRequests').add(verificationData)
+        .then(() => {
+            // Enviar notificação por email para os administradores
+            sendVerificationNotification(verificationData);
+            
+            alert('Solicitação de verificação enviada com sucesso! Você receberá uma resposta em até 48 horas.');
+            closeVerificationModal();
+            
+            // Limpar formulário
+            document.getElementById('verificationForm').reset();
+        })
+        .catch((error) => {
+            console.error('Erro ao enviar solicitação:', error);
+            alert('Erro ao enviar solicitação. Tente novamente.');
+        });
+}
+
+function sendVerificationNotification(verificationData) {
+    // Simular envio de email (em produção, você usaria um serviço como EmailJS ou backend)
+    const emailData = {
+        to: adminEmails,
+        subject: 'Nova Solicitação de Verificação - American Dev',
+        body: `
+            Nova solicitação de verificação recebida:
+            
+            Nome: ${verificationData.fullName}
+            Email: ${verificationData.email}
+            Categoria: ${verificationData.category}
+            Motivo: ${verificationData.reason}
+            Links Sociais: ${verificationData.socialLinks}
+            
+            Data/Hora: ${new Date().toLocaleString('pt-BR')}
+            
+            Acesse o painel administrativo para revisar e aprovar/rejeitar a solicitação.
+        `
+    };
+    
+    // Aqui você implementaria o envio real do email
+    console.log('Notificação de verificação enviada:', emailData);
+}
+
+// Atualizar função updateProfileUI para incluir o novo badge
+function updateProfileUI(userData) {
+    const profilePics = document.querySelectorAll('[id$="ProfilePic"]');
+    const userNames = document.querySelectorAll('[id$="UserName"]');
+    const profileNames = document.querySelectorAll('[id$="PageName"]');
+    
+    profilePics.forEach(pic => pic.src = userData.profilePic || 'https://via.placeholder.com/150');
+    userNames.forEach(name => name.textContent = userData.name || 'Usuário');
+    profileNames.forEach(name => {
+        const verifiedBadge = userData.verified ? '<svg viewBox="0 0 22 22" class="w-5 h-5 text-blue-500 ml-1 inline" fill="currentColor"><path d="M22.25 12c0-1.43-.88-2.67-2.19-3.34.46-1.39.2-2.9-.81-3.91s-2.52-1.27-3.91-.81c-.67-1.31-1.91-2.19-3.34-2.19s-2.67.88-3.33 2.19c-1.4-.46-2.91-.2-3.92.81s-1.27 2.52-.8 3.91c-1.31.67-2.2 1.91-2.2 3.34s.89 2.67 2.2 3.33c-.47 1.39-.2 2.9.8 3.92s2.52 1.27 3.91.81c.67 1.31 1.91 2.19 3.34 2.19s2.67-.88 3.33-2.19c1.4.46 2.91.2 3.92-.81s1.27-2.52.81-3.91c1.31-.67 2.19-1.91 2.19-3.34zm-11.5 4.88L6.41 12.5l1.41-1.41L10.75 14.07l5.42-5.42 1.41 1.41-6.83 6.82z"/></svg>' : '';
+        name.innerHTML = `${userData.name || 'Usuário'} ${verifiedBadge}`;
+    });
+    
+    // Update online status
+    updateOnlineStatus(userData.isOnline);
+    
+    // Update member since
+    if (userData.createdAt) {
+        const date = userData.createdAt.toDate();
+        const memberSinceElement = document.getElementById('memberSince');
+        if (memberSinceElement) {
+            memberSinceElement.textContent = date.toLocaleDateString('pt-BR');
+        }
+    }
+}
+
+// Atualizar a função do sidebar para usar o novo botão de verificação
+function updateSidebarVerificationButton() {
+    const verificationButton = document.getElementById('requestVerificationBtn');
+    if (verificationButton) {
+        verificationButton.onclick = showVerificationModal;
+    }
+}
+
+// Adicionar event listeners quando o DOM estiver carregado
+document.addEventListener('DOMContentLoaded', function() {
+    // Event listeners existentes...
+    
+    // Fechar modais clicando fora
+    document.getElementById('createChannelModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeCreateChannelModal();
+        }
+    });
+    
+    document.getElementById('verificationModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeVerificationModal();
+        }
+    });
+});
+
+       // Initialize the app
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                currentUser = user;
+                loadUserProfile();
+                showMainApp();
+            } else {
+                currentUser = null;
+                document.getElementById('authScreen').classList.remove('hidden');
+                document.getElementById('mainApp').classList.add('hidden');
+            }
+        });
+
+    </script>
+</body>
+</html>
+ 
