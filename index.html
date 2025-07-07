@@ -8,13 +8,7 @@
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
-<!-- Google Tag Manager -->
-<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,'script','dataLayer','GTM-5XLXTLBC');</script>
-<!-- End Google Tag Manager -->
+
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
@@ -336,10 +330,6 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     </style>
 </head>
 <body>
-    <!-- Google Tag Manager (noscript) -->
-<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5XLXTLBC"
-height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-<!-- End Google Tag Manager (noscript) -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/showdown/dist/showdown.min.js"></script>
@@ -1343,21 +1333,11 @@ h3.subtitle {
             </div>
             
             <div class="space-y-4">
-                <button class="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition">
-                  <i <svg viewBox="0 0 24 24" aria-label="Verified account" role="img" class="r-1cvl2hr r-4qtqp9 r-yyyyoo r-18kxxzh r-dnmrzs r-bnwqim r-1plcrui r-lrvibr">
-  <g>
-    <path d="M22.25 12c0-1.43-.88-2.67-2.19-3.34.46-1.39.2-2.9-.81-3.91s-2.52-1.27-3.91-.81c-.66-1.31-1.91-2.19-3.34-2.19s-2.67.88-3.33 2.19c-1.4-.46-2.91-.2-3.92.81s-1.26 2.52-.8 3.91c-1.31.67-2.2 1.91-2.2 3.34s.89 2.67 2.2 3.34c-.46 1.39-.21 2.9.8 3.91s2.52 1.26 3.91.81c.67 1.31 1.91 2.19 3.34 2.19s2.68-.88 3.34-2.19c1.39.45 2.9.2 3.91-.81s1.27-2.52.81-3.91c1.31-.67 2.19-1.91 2.19-3.34zm-11.48-2.97c.3-.3.77-.3 1.07 0l2.44 2.44c.15.15.22.35.22.53s-.07.38-.22.53l-4.98 4.98c-.15.15-.35.22-.53.22s-.38-.07-.53-.22l-2.47-2.47c-.3-.3-.3-.77 0-1.07s.77-.3 1.07 0l1.9 1.9 4.4-4.4z"></path>
-  </g>
-</svg></i>
-Pedir Verificação
-                </button>
-                   <button onclick="changeProfilePicWithLinkAdvanced()" class="w-full bg-gray-600 text-white py-3 rounded-lg hover:bg-gray-700 transition">
-    <i class="fas fa-link mr-2"></i>Trocar Foto (Link Imgur)
-</button>
+                <button class="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition"><i <svg viewBox="0 0 24 24" aria-label="Verified account" role="img" class="r-1cvl2hr r-4qtqp9 r-yyyyoo r-18kxxzh r-dnmrzs r-bnwqim r-1plcrui r-lrvibr"><g><path d="M22.25 12c0-1.43-.88-2.67-2.19-3.34.46-1.39.2-2.9-.81-3.91s-2.52-1.27-3.91-.81c-.66-1.31-1.91-2.19-3.34-2.19s-2.67.88-3.33 2.19c-1.4-.46-2.91-.2-3.92.81s-1.26 2.52-.8 3.91c-1.31.67-2.2 1.91-2.2 3.34s.89 2.67 2.2 3.34c-.46 1.39-.21 2.9.8 3.91s2.52 1.26 3.91.81c.67 1.31 1.91 2.19 3.34 2.19s2.68-.88 3.34-2.19c1.39.45 2.9.2 3.91-.81s1.27-2.52.81-3.91c1.31-.67 2.19-1.91 2.19-3.34zm-11.48-2.97c.3-.3.77-.3 1.07 0l2.44 2.44c.15.15.22.35.22.53s-.07.38-.22.53l-4.98 4.98c-.15.15-.35.22-.53.22s-.38-.07-.53-.22l-2.47-2.47c-.3-.3-.3-.77 0-1.07s.77-.3 1.07 0l1.9 1.9 4.4-4.4z"></path></g></svg></i>Pedir Verificação</button>
+             <button onclick="changeProfilePicWithLink()" class="w-full bg-gray-600 text-white py-3 rounded-lg hover:bg-gray-700 transition"><i class="fas fa-camera mr-2"></i>Trocar Foto de Perfil</button>
 
-                <button onclick="changeProfilePic()" class="w-full bg-gray-600 text-white py-3 rounded-lg hover:bg-gray-700 transition">
-                    <i class="fas fa-camera mr-2"></i>Trocar Foto de Perfil
-                </button>
+
+               
                 <div class="flex items-center justify-between">
                     <span class="text-white">Status Online</span>
                     <button id="toggleOnlineStatus" onclick="toggleOnlineStatus()" class="bg-green-500 text-white px-4 py-2 rounded-lg">
@@ -1498,13 +1478,584 @@ Pedir Verificação
                         <button onclick="createPost()" class="gradient-btn text-white px-6 py-2 rounded-lg font-semibold">
                             Publicar
                         </button>
+
+     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+      body{
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .chat-container {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 1000;
+        }
+
+        .chat-toggle {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #000000 0%, #1a1a2e 50%, #0066cc 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 8px 32px rgba(0, 102, 204, 0.3);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid rgba(0, 102, 204, 0.5);
+        }
+
+        .chat-toggle::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(0, 102, 204, 0.3), transparent);
+            transform: rotate(45deg);
+            transition: all 0.5s ease;
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: rotate(45deg) translateX(-100%); }
+            50% { transform: rotate(45deg) translateX(100%); }
+            100% { transform: rotate(45deg) translateX(-100%); }
+        }
+
+        .chat-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 12px 48px rgba(0, 102, 204, 0.5);
+        }
+
+        .bot-icon {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2;
+        }
+
+        .icon-image {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            filter: drop-shadow(0 2px 8px rgba(0, 102, 204, 0.5));
+        }
+
+        .chat-window {
+            position: absolute;
+            bottom: 90px;
+            right: 0;
+            width: 350px;
+            height: 500px;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2a2a3e 100%);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(0, 102, 204, 0.3);
+            transform: translateY(20px) scale(0.9);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(20px);
+            overflow: hidden;
+        }
+
+        .chat-window.active {
+            transform: translateY(0) scale(1);
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .chat-header {
+            background: linear-gradient(135deg, #000000 0%, #1a1a2e 100%);
+            padding: 20px;
+            border-radius: 20px 20px 0 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid rgba(0, 102, 204, 0.3);
+        }
+
+        .bot-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .bot-avatar {
+            width: 45px;
+            height: 45px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .avatar-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+            z-index: 2;
+        }
+
+        .glowing-ring {
+            position: absolute;
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            border: 2px solid;
+            border-color: #0066cc transparent #0066cc transparent;
+            animation: colorChange 2s infinite, spin 3s linear infinite;
+        }
+
+        @keyframes colorChange {
+            0% { border-color: #0066cc transparent #0066cc transparent; }
+            25% { border-color: #00cc66 transparent #00cc66 transparent; }
+            50% { border-color: #cc0066 transparent #cc0066 transparent; }
+            75% { border-color: #cc6600 transparent #cc6600 transparent; }
+            100% { border-color: #0066cc transparent #0066cc transparent; }
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .bot-info h3 {
+            color: #ffffff;
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .status {
+            color: #00cc66;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .status::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: #00cc66;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        .close-btn {
+            width: 30px;
+            height: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #ffffff;
+            font-size: 18px;
+            transition: all 0.3s ease;
+        }
+
+        .close-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1);
+        }
+
+        .chat-messages {
+            height: 340px;
+            overflow-y: auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .chat-messages::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .chat-messages::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+
+        .chat-messages::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #0066cc, #00cc66);
+            border-radius: 10px;
+        }
+
+        .message {
+            max-width: 80%;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .bot-message {
+            align-self: flex-start;
+        }
+
+        .user-message {
+            align-self: flex-end;
+        }
+
+        .message-content {
+            padding: 12px 16px;
+            border-radius: 18px;
+            font-size: 14px;
+            line-height: 1.4;
+            word-wrap: break-word;
+        }
+
+        .bot-message .message-content {
+            background: linear-gradient(135deg, #0066cc, #0080ff);
+            color: #ffffff;
+            border-bottom-left-radius: 6px;
+        }
+
+        .user-message .message-content {
+            background: linear-gradient(135deg, #333333, #555555);
+            color: #ffffff;
+            border-bottom-right-radius: 6px;
+        }
+
+        .chat-input {
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 0 0 20px 20px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            border-top: 1px solid rgba(0, 102, 204, 0.3);
+        }
+
+        #messageInput {
+            flex: 1;
+            padding: 12px 16px;
+            border: none;
+            border-radius: 25px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            font-size: 14px;
+            outline: none;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        #messageInput::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        #messageInput:focus {
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 0 0 2px rgba(0, 102, 204, 0.5);
+        }
+
+        #sendBtn {
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, #0066cc, #00cc66);
+            border: none;
+            border-radius: 50%;
+            color: #ffffff;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        #sendBtn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 20px rgba(0, 102, 204, 0.4);
+        }
+
+        .typing-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 16px;
+            background: linear-gradient(135deg, #0066cc, #0080ff);
+            border-radius: 18px;
+            border-bottom-left-radius: 6px;
+            max-width: 80%;
+        }
+
+        .typing-dots {
+            display: flex;
+            gap: 3px;
+        }
+
+        .typing-dot {
+            width: 6px;
+            height: 6px;
+            background: #ffffff;
+            border-radius: 50%;
+            animation: typingDot 1.5s infinite;
+        }
+
+        .typing-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes typingDot {
+            0%, 60%, 100% {
+                opacity: 0.3;
+                transform: scale(0.8);
+            }
+            30% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @media (max-width: 760px) {
+            .chat-container {
+                bottom: 20px;
+                right: 21px;
+            }
+            
+            .chat-window {
+                width: 300px;
+                height: 570px;
+            }
+        }
+    </style>
+</head>
+<body>
+   
+    <script>
+        const API_KEY = 'AIzaSyDaU-2y8u-94gCDghFfL83gm1lFqB0l7Cs';
+const API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro:generateContent';
+        class ChatBot {
+            constructor() {
+                this.chatToggle = document.getElementById('chatToggle');
+                this.chatWindow = document.getElementById('chatWindow');
+                this.closeBtn = document.getElementById('closeBtn');
+                this.messageInput = document.getElementById('messageInput');
+                this.sendBtn = document.getElementById('sendBtn');
+                this.chatMessages = document.getElementById('chatMessages');
+                
+                this.isOpen = false;
+                this.initializeEventListeners();
+            }
+
+            initializeEventListeners() {
+                this.chatToggle.addEventListener('click', () => this.toggleChat());
+                this.closeBtn.addEventListener('click', () => this.closeChat());
+                this.sendBtn.addEventListener('click', () => this.sendMessage());
+                this.messageInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') this.sendMessage();
+                });
+            }
+
+            toggleChat() {
+                this.isOpen = !this.isOpen;
+                this.chatWindow.classList.toggle('active', this.isOpen);
+                
+                if (this.isOpen) {
+                    this.messageInput.focus();
+                }
+            }
+
+            closeChat() {
+                this.isOpen = false;
+                this.chatWindow.classList.remove('active');
+            }
+
+            async sendMessage() {
+                const message = this.messageInput.value.trim();
+                if (!message) return;
+
+                this.addMessage(message, 'user');
+                this.messageInput.value = '';
+                
+                this.showTypingIndicator();
+                
+                try {
+                    const response = await this.callGeminiAPI(message);
+                    this.hideTypingIndicator();
+                    this.addMessage(response, 'bot');
+                } catch (error) {
+                    this.hideTypingIndicator();
+                    this.addMessage('Desculpe, ocorreu um erro ao processar sua mensagem. Tente novamente.', 'bot');
+                    console.error('Erro na API:', error);
+                }
+            }
+
+            async callGeminiAPI(message) {
+                const requestBody = {
+                    contents: [{
+                        parts: [{
+                            text: message
+                        }]
+                    }]
+                };
+
+                const response = await fetch(`${API_URL}?key=${API_KEY}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(requestBody)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                return data.candidates[0].content.parts[0].text;
+            }
+
+            addMessage(message, type) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `message ${type}-message`;
+                
+                const messageContent = document.createElement('div');
+                messageContent.className = 'message-content';
+                messageContent.textContent = message;
+                
+                messageDiv.appendChild(messageContent);
+                this.chatMessages.appendChild(messageDiv);
+                
+                this.scrollToBottom();
+            }
+
+            showTypingIndicator() {
+                const typingDiv = document.createElement('div');
+                typingDiv.className = 'message bot-message typing-indicator';
+                typingDiv.id = 'typingIndicator';
+                
+                const dotsDiv = document.createElement('div');
+                dotsDiv.className = 'typing-dots';
+                
+                for (let i = 0; i < 3; i++) {
+                    const dot = document.createElement('div');
+                    dot.className = 'typing-dot';
+                    dotsDiv.appendChild(dot);
+                }
+                
+                typingDiv.appendChild(dotsDiv);
+                this.chatMessages.appendChild(typingDiv);
+                
+                this.scrollToBottom();
+            }
+
+            hideTypingIndicator() {
+                const typingIndicator = document.getElementById('typingIndicator');
+                if (typingIndicator) {
+                    typingIndicator.remove();
+                }
+            }
+
+            scrollToBottom() {
+                this.chatMessages.scrollTop = this.chatMessages.scrollHeight;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            new ChatBot();
+        });
+    </script>
+</body>
+</html>
+<!-- Botão de menu (três pontos) -->
+<button onclick="showPostMenu('${post.id}', '${post.userId}')" 
+        class="post-menu-btn text-gray-400 hover:text-white p-2 rounded-full hover:bg-gray-700 transition">
+    <i class="fas fa-ellipsis-v"></i>
+</button>
+
+<!-- Menu dropdown com botão de editar -->
+<div id="postMenu-${post.id}" 
+     class="hidden absolute right-0 mt-2 w-48 bg-gray-800 rounded-lg shadow-lg border border-gray-600 z-10">
+    <button onclick="editPost('${post.id}')" 
+            class="w-full text-left px-4 py-2 text-white hover:bg-gray-700 rounded-t-lg transition">
+        <i class="fas fa-edit mr-2"></i>Editar Publicação
+    </button>
+    <button onclick="deletePost('${post.id}')" 
+            class="w-full text-left px-4 py-2 text-red-400 hover:bg-gray-700 rounded-b-lg transition">
+        <i class="fas fa-trash mr-2"></i>Eliminar Publicação
+    </button>
+</div>
                     </div>
                 </div>
 
                 <!-- Posts Feed -->
                 <div id="postsContainer">
+                    <!-- Botão de menu (três pontos) -->
+<button onclick="showPostMenu('${post.id}', '${post.userId}')" 
+        class="post-menu-btn text-gray-400 hover:text-white p-2 rounded-full hover:bg-gray-700 transition">
+    <i class="fas fa-ellipsis-v"></i>
+</button>
+                    <div id="postMenu-${post.id}" 
+     class="hidden absolute right-0 mt-2 w-48 bg-gray-800 rounded-lg shadow-lg border border-gray-600 z-10">
+    <button onclick="editPost('${post.id}')" 
+            class="w-full text-left px-4 py-2 text-white hover:bg-gray-700 rounded-t-lg transition">
+        <i class="fas fa-edit mr-2"></i>Editar Publicação
+    </button>
+    <button onclick="deletePost('${post.id}')" 
+            class="w-full text-left px-4 py-2 text-red-400 hover:bg-gray-700 rounded-b-lg transition">
+        <i class="fas fa-trash mr-2"></i>Eliminar Publicação
+    </button>
+</div>
                     <!-- Posts will be loaded here -->
-                </div>
+<!-- Botão de menu (três pontos) -->
+<button onclick="showPostMenu('${post.id}', '${post.userId}')" 
+        class="post-menu-btn text-gray-400 hover:text-white p-2 rounded-full hover:bg-gray-700 transition">
+    <i class="fas fa-ellipsis-v"></i>
+</button>
+
+<!-- Menu dropdown com botão de editar -->
+<div id="postMenu-${post.id}" 
+     class="hidden absolute right-0 mt-2 w-48 bg-gray-800 rounded-lg shadow-lg border border-gray-600 z-10">
+    <button onclick="editPost('${post.id}')" 
+            class="w-full text-left px-4 py-2 text-white hover:bg-gray-700 rounded-t-lg transition">
+        <i class="fas fa-edit mr-2"></i>Editar Publicação
+    </button>
+    <button onclick="deletePost('${post.id}')" 
+            class="w-full text-left px-4 py-2 text-red-400 hover:bg-gray-700 rounded-b-lg transition">
+        <i class="fas fa-trash mr-2"></i>Eliminar Publicação
+    </button>
+</div>
+             </div>
             </div>
             
             <!-- Friends Section -->
@@ -1554,6 +2105,330 @@ Pedir Verificação
             </div>
         </div>
     </div>
+         <div class="chat-container">
+        <div class="chat-toggle" id="chatToggle">
+            <div class="bot-icon">
+                <img src="https://imgur.com/T7W4jX9.png" alt="Bot Icon" class="icon-image">
+            </div>
+        </div>
+        
+        <div class="chat-window" id="chatWindow">
+            <div class="chat-header">
+                <div class="bot-profile">
+                    <div class="bot-avatar">
+                        <img src="https://imgur.com/T7W4jX9.png" alt="Americans Bot" class="avatar-image">
+                        <div class="glowing-ring"></div>
+                    </div>
+                    <div class="bot-info">
+                        <h3>Americans Bot 2.0v</h3>
+                        <span class="status">Online</span>
+                    </div>
+                </div>
+                <div class="close-btn" id="closeBtn">×</div>
+            </div>
+          <div class="chat-messages" id="chatMessages">
+                <div class="message bot-message">
+                    
+                        
+            
+                    
+                            <div class="message-content">
+                        Olá! Sou o Americans Bot 2.0v. Como posso ajudá-lo hoje?
+                            </div> 
+                </div>
+          </div>
+          </body>
+                <div class="chat-input">
+                <input type="text" id="messageInput" placeholder="Digite sua mensagem...">
+                <button id="sendBtn">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                        <path d="M2 21L23 12L2 3V10L17 12L2 14V21Z" fill="currentColor"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    
+
+<script>
+// Função para mostrar menu de opções do post
+function showPostMenu(postId, postUserId) {
+    if (!currentUser) return;
+    
+    // Verificar se o usuário é o dono do post
+    if (currentUser.uid !== postUserId) {
+        alert('Você só pode editar ou eliminar seus próprios posts!');
+        return;
+    }
+    
+    const menu = document.getElementById(`postMenu-${postId}`);
+    if (menu) {
+        menu.classList.toggle('hidden');
+    }
+}
+
+// Função para eliminar publicação
+function deletePost(postId) {
+    if (!currentUser) return;
+    
+    if (confirm('Tem certeza que deseja eliminar esta publicação?')) {
+        db.collection('posts').doc(postId).delete()
+            .then(() => {
+                alert('Publicação eliminada com sucesso!');
+                loadFeed();
+            })
+            .catch((error) => {
+                console.error('Erro ao eliminar post:', error);
+                alert('Erro ao eliminar publicação');
+            });
+    }
+}
+
+// Função para editar publicação
+function editPost(postId) {
+    if (!currentUser) return;
+    
+    // Buscar o post atual
+    db.collection('posts').doc(postId).get()
+        .then((doc) => {
+            if (doc.exists) {
+                const postData = doc.data();
+                
+                // Mostrar formulário de edição
+                showEditPostForm(postId, postData.content);
+            }
+        })
+        .catch((error) => {
+            console.error('Erro ao carregar post:', error);
+        });
+}
+
+// Função para mostrar formulário de edição
+function showEditPostForm(postId, currentContent) {
+    const formHTML = `
+        <div id="editPostModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div class="glass-effect p-6 max-w-md w-full mx-4 animate-fadeIn">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-xl font-semibold text-white">Editar Publicação</h3>
+                    <button onclick="closeEditPostModal()" class="text-gray-400 hover:text-white">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+                
+                <div class="space-y-4">
+                    <textarea id="editPostContent" 
+                              class="w-full p-4 bg-gray-800 text-white rounded-lg border border-gray-600 focus:border-blue-500 resize-none" 
+                              rows="4" 
+                              placeholder="Edite sua publicação...">${currentContent}</textarea>
+                    
+                    <div class="flex space-x-3">
+                        <button onclick="saveEditedPost('${postId}')" 
+                                class="flex-1 gradient-btn text-white py-2 rounded-lg font-semibold hover:opacity-90 transition">
+                            <i class="fas fa-save mr-2"></i>Salvar
+                        </button>
+                        <button onclick="closeEditPostModal()" 
+                                class="flex-1 bg-gray-600 text-white py-2 rounded-lg font-semibold hover:bg-gray-700 transition">
+                            Cancelar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    document.body.insertAdjacentHTML('beforeend', formHTML);
+}
+
+// Função para salvar post editado
+function saveEditedPost(postId) {
+    const newContent = document.getElementById('editPostContent').value.trim();
+    
+    if (!newContent) {
+        alert('Por favor, escreva algo para a publicação');
+        return;
+    }
+    
+    db.collection('posts').doc(postId).update({
+        content: newContent,
+        editedAt: firebase.firestore.FieldValue.serverTimestamp(),
+        isEdited: true
+    })
+    .then(() => {
+        alert('Publicação editada com sucesso!');
+        closeEditPostModal();
+        loadFeed();
+    })
+    .catch((error) => {
+        console.error('Erro ao editar post:', error);
+        alert('Erro ao editar publicação');
+    });
+}
+
+// Função para fechar modal de edição
+function closeEditPostModal() {
+    const modal = document.getElementById('editPostModal');
+    if (modal) {
+        modal.remove();
+    }
+}
+
+// Função para fechar menus quando clicar fora
+document.addEventListener('click', function(event) {
+    const menus = document.querySelectorAll('[id^="postMenu-"]');
+    menus.forEach(menu => {
+        if (!menu.contains(event.target) && !event.target.closest('.post-menu-btn')) {
+            menu.classList.add('hidden');
+        }
+    });
+});
+
+// Atualizar a função renderPost para incluir o menu de opções
+function renderPost(post) {
+    const postsContainer = document.getElementById('postsContainer');
+    
+    // Get user info for the post
+    db.collection('users').doc(post.userId).get()
+        .then((userDoc) => {
+            if (userDoc.exists) {
+                const userData = userDoc.data();
+                
+                const postElement = document.createElement('div');
+                postElement.className = 'post-card animate-fadeIn';
+                
+                const timeAgo = post.timestamp ? getTimeAgo(post.timestamp.toDate()) : 'Agora';
+                const isOwner = currentUser && currentUser.uid === post.userId;
+                const editedText = post.isEdited ? '<span class="text-gray-500 text-xs ml-2">(editado)</span>' : '';
+                
+                postElement.innerHTML = `
+                    <div class="flex items-start space-x-4">
+                        <div class="relative">
+                            <img src="${userData.profilePic || 'https://via.placeholder.com/50'}" 
+                                 alt="Profile" class="profile-pic">
+                            <div class="${userData.isOnline ? 'online-indicator' : 'online-indicator offline-indicator'}"></div>
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-2">
+                                    <h4 class="font-semibold text-white">${userData.name}</h4>
+                                    ${userData.verified ? '<svg viewBox="0 0 22 22" class="w-5 h-5 text-blue-500 ml-1" fill="currentColor"><path d="M22.25 12c0-1.43-.88-2.67-2.19-3.34.46-1.39.2-2.9-.81-3.91s-2.52-1.27-3.91-.81c-.67-1.31-1.91-2.19-3.34-2.19s-2.67.88-3.33 2.19c-1.4-.46-2.91-.2-3.92.81s-1.27 2.52-.8 3.91c-1.31.67-2.2 1.91-2.2 3.34s.89 2.67 2.2 3.33c-.47 1.39-.2 2.9.8 3.92s2.52 1.27 3.91.81c.67 1.31 1.91 2.19 3.34 2.19s2.67-.88 3.33-2.19c1.4.46 2.91.2 3.92-.81s1.27-2.52.81-3.91c1.31-.67 2.19-1.91 2.19-3.34zm-11.5 4.88L6.41 12.5l1.41-1.41L10.75 14.07l5.42-5.42 1.41 1.41-6.83 6.82z"/></svg>' : ''}
+                                    <span class="text-gray-400 text-sm">@${userData.name.toLowerCase().replace(/\s+/g, '')}</span>
+                                    <span class="text-gray-500 text-sm">•</span>
+                                    <span class="text-gray-500 text-sm">${timeAgo}</span>
+                                    ${editedText}
+                                </div>
+                                
+                                ${isOwner ? `
+                                    <div class="relative">
+                                        <button onclick="showPostMenu('${post.id}', '${post.userId}')" 
+                                                class="post-menu-btn text-gray-400 hover:text-white p-2 rounded-full hover:bg-gray-700 transition">
+                                            <i class="fas fa-ellipsis-v"></i>
+                                        </button>
+                                        
+                                        <div id="postMenu-${post.id}" 
+                                             class="hidden absolute right-0 mt-2 w-48 bg-gray-800 rounded-lg shadow-lg border border-gray-600 z-10">
+                                            <button onclick="editPost('${post.id}')" 
+                                                    class="w-full text-left px-4 py-2 text-white hover:bg-gray-700 rounded-t-lg transition">
+                                                <i class="fas fa-edit mr-2"></i>Editar Publicação
+                                            </button>
+                                            <button onclick="deletePost('${post.id}')" 
+                                                    class="w-full text-left px-4 py-2 text-red-400 hover:bg-gray-700 rounded-b-lg transition">
+                                                <i class="fas fa-trash mr-2"></i>Eliminar Publicação
+                                            </button>
+                                        </div>
+                                    </div>
+                                ` : ''}
+                            </div>
+                            
+                            <p class="text-gray-200 mt-2">${post.content}</p>
+                            
+                            <div class="flex items-center space-x-6 mt-4">
+                                <button onclick="reactToPost('${post.id}')" 
+                                        class="reaction-btn flex items-center space-x-2 text-gray-400 hover:text-red-400 transition">
+                                    <i class="fas fa-heart"></i>
+                                    <span id="reactions-${post.id}">${post.reactions || 0}</span>
+                                </button>
+                                <button onclick="toggleComments('${post.id}')" 
+                                        class="flex items-center space-x-2 text-gray-400 hover:text-blue-400 transition">
+                                    <i class="fas fa-comment"></i>
+                                    <span>${post.comments ? post.comments.length : 0}</span>
+                                </button>
+                                <button class="flex items-center space-x-2 text-gray-400 hover:text-green-400 transition">
+                                    <i class="fas fa-share"></i>
+                                    <span>Compartilhar</span>
+                                </button>
+                            </div>
+                            
+                            <div id="comments-${post.id}" class="hidden mt-4 space-y-3">
+                                <div class="flex space-x-3">
+                                    <img src="${document.getElementById('headerProfilePic').src}" 
+                                         alt="Profile" class="w-8 h-8 rounded-full">
+                                    <div class="flex-1">
+                                        <textarea id="comment-input-${post.id}" 
+                                                  placeholder="Escreva um comentário..." 
+                                                  class="w-full p-2 bg-gray-800 text-white rounded-lg border border-gray-600 focus:border-blue-500 resize-none" 
+                                                  rows="2"></textarea>
+                                        <button onclick="addComment('${post.id}')" 
+                                                class="mt-2 bg-blue-600 text-white px-4 py-1 rounded-lg text-sm hover:bg-blue-700 transition">
+                                            Comentar
+                                        </button>
+                                    </div>
+                                </div>
+                                <div id="comments-list-${post.id}">
+                                    <!-- Comments will be loaded here -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                postsContainer.appendChild(postElement);
+                
+                // Load comments for this post
+                loadComments(post.id);
+            }
+        });
+}
+
+// Função para trocar foto de perfil com link do Imgur
+function changeProfilePicWithLink() {
+    if (!currentUser) return;
+    
+    const imageUrl = prompt('Cole o link da imagem do Imgur:\n(Exemplo: https://imgur.com/abc123.jpg ou https://imgur.com/abc123.png)');
+    
+    if (!imageUrl) return;
+    
+    // Verificar se é um link válido do Imgur
+    const imgurPattern = /^https:\/\/imgur\.com\/[a-zA-Z0-9]+\.(jpg|jpeg|png)$/i;
+    
+    if (!imgurPattern.test(imageUrl)) {
+        alert('Por favor, use apenas links do Imgur com formato:\nhttps://imgur.com/ID.jpg ou https://imgur.com/ID.png');
+        return;
+    }
+    
+    // Atualizar foto de perfil no Firebase
+    db.collection('users').doc(currentUser.uid).update({
+        profilePic: imageUrl
+    })
+    .then(() => {
+        alert('Foto de perfil atualizada com sucesso!');
+        
+        // Atualizar todas as imagens de perfil na interface
+        const profilePics = document.querySelectorAll('[id$="ProfilePic"]');
+        profilePics.forEach(pic => pic.src = imageUrl);
+        
+        // Recarregar o feed para mostrar a nova foto nos posts
+        loadFeed();
+    })
+    .catch((error) => {
+        console.error('Erro ao atualizar foto:', error);
+        alert('Erro ao atualizar foto de perfil');
+    });
+}
+
+// Atualizar o botão no sidebar para usar a nova função
+// Substituir a linha existente no sidebar por:
+//
+</script>
+
 <script>
 // Configuração do Bot
 const BOT_EMAIL = 'isaacmub82@gmail.com';
@@ -1832,9 +2707,9 @@ function checkForBotMentions() {
     
     db.collection('posts')
         .where('content', '>=', '@Letícia')
-        .where('content', '<=', '@isaac\uf8ff')
+        .where('content', '<=', '@Milton do Nascimento\uf8ff')
         .orderBy('timestamp', 'desc')
-        .limit(53)
+        .limit(5000)
         .onSnapshot((snapshot) => {
             snapshot.docChanges().forEach((change) => {
                 if (change.type === 'added') {
@@ -1991,7 +2866,24 @@ function renderPost(post) {
                                     <span>Compartilhar</span>
                                 </button>
                             </div>
-                            
+                            <!-- Botão de menu (três pontos) -->
+<button onclick="showPostMenu('${post.id}', '${post.userId}')" 
+        class="post-menu-btn text-gray-400 hover:text-white p-2 rounded-full hover:bg-gray-700 transition">
+    <i class="fas fa-ellipsis-v"></i>
+</button>
+
+<!-- Menu dropdown com botão de editar -->
+<div id="postMenu-${post.id}" 
+     class="hidden absolute right-0 mt-2 w-48 bg-gray-800 rounded-lg shadow-lg border border-gray-600 z-10">
+    <button onclick="editPost('${post.id}')" 
+            class="w-full text-left px-4 py-2 text-white hover:bg-gray-700 rounded-t-lg transition">
+        <i class="fas fa-edit mr-2"></i>Editar Publicação
+    </button>
+    <button onclick="deletePost('${post.id}')" 
+            class="w-full text-left px-4 py-2 text-red-400 hover:bg-gray-700 rounded-b-lg transition">
+        <i class="fas fa-trash mr-2"></i>Eliminar Publicação
+    </button>
+</div>
                             <div id="comments-${post.id}" class="hidden mt-4 space-y-3">
                                 <div class="flex space-x-3">
                                     <img src="${document.getElementById('headerProfilePic').src}" 
@@ -2008,6 +2900,24 @@ function renderPost(post) {
                                     </div>
                                 </div>
                                 <div id="comments-list-${post.id}">
+                <!-- Botão de menu (três pontos) -->
+<button onclick="showPostMenu('${post.id}', '${post.userId}')" 
+        class="post-menu-btn text-gray-400 hover:text-white p-2 rounded-full hover:bg-gray-700 transition">
+    <i class="fas fa-ellipsis-v"></i>
+</button>
+
+<!-- Menu dropdown com botão de editar -->
+<div id="postMenu-${post.id}" 
+     class="hidden absolute right-0 mt-2 w-48 bg-gray-800 rounded-lg shadow-lg border border-gray-600 z-10">
+    <button onclick="editPost('${post.id}')" 
+            class="w-full text-left px-4 py-2 text-white hover:bg-gray-700 rounded-t-lg transition">
+        <i class="fas fa-edit mr-2"></i>Editar Publicação
+    </button>
+    <button onclick="deletePost('${post.id}')" 
+            class="w-full text-left px-4 py-2 text-red-400 hover:bg-gray-700 rounded-b-lg transition">
+        <i class="fas fa-trash mr-2"></i>Eliminar Publicação
+    </button>
+</div>
                                     <!-- Comments will be loaded here -->
                                 </div>
                             </div>
