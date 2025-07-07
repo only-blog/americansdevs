@@ -24,7 +24,31 @@
 
     <script src="https://cdn.tailwindcss.com"></script>
 
-
+    <!-- Outros metas -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#667eea">
+    
+    <!-- PWA para iOS -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Meu Site">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    
+    <script>
+        // Registrar Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(registration => {
+                        console.log('SW registrado com sucesso:', registration);
+                    })
+                    .catch(error => {
+                        console.log('Falha ao registrar SW:', error);
+                    });
+            });
+        }
+    </script>
+</head>
     <style>
        /* Efeito de Vidro para a Janela do Chat */
 .glass-effect {
@@ -1350,15 +1374,220 @@ h3.subtitle {
     
     <!-- Main Content -->
     <div class="min-h-screen">
+         <button onclick="showDataControlPanel()" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition flex items-center space-x-2">
+    <i class="fas fa-chart-bar"></i>
+    <span>Dados 20MB</span>
+</button>
+        <script>
+        // Detector de conexão
+let isOnlineStatus = navigator.onLine;
+
+// Função para atualizar status de conexão
+function updateConnectionStatus() {
+    const statusElement = document.getElementById('connectionStatus');
+    
+    if (navigator.onLine) {
+        isOnlineStatus = true;
+        if (statusElement) {
+            statusElement.innerHTML = `
+                <div class="flex items-center space-x-2 bg-green-600 px-3 py-1 rounded-full">
+                    <div class="w-2 h-2 bg-white rounded-full animate-pulse"></div>
+                    <span class="text-white text-sm">Online</span>
+                </div>
+            `;
+        }
+        
+        // Tentar sincronizar dados pendentes
+        syncPendingData();
+    } else {
+        isOnlineStatus = false;
+        if (statusElement) {
+            statusElement.innerHTML = `
+                <div class="flex items-center space-x-2 bg-red-600 px-3 py-1 rounded-full">
+                    <div class="w-2 h-2 bg-white rounded-full"></div>
+                    <span class="text-white text-sm">Offline</span>
+                </div>
+            `;
+        }
+        
+        // Mostrar notificação de offline
+        showOfflineNotification();
+    }
+}
+
+// Event listeners para mudanças de conexão
+window.addEventListener('online', updateConnectionStatus);
+window.addEventListener('offline', updateConnectionStatus);
+
+// Verificar conexão ao carregar
+document.addEventListener('DOMContentLoaded', updateConnectionStatus);
+
+// Função para mostrar notificação offline
+function showOfflineNotification() {
+    const notification = document.createElement('div');
+    notification.className = 'fixed top-4 right-4 bg-red-600 text-white px-6 py-3 rounded-lg shadow-lg z-50 animate-slideIn';
+    notification.innerHTML = `
+        <div class="flex items-center space-x-2">
+            <i class="fas fa-wifi-slash"></i>
+            <span>Você está offline</span>
+        </div>
+    `;
+    
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        notification.remove();
+    }, 5000);
+}
+
+// Função para sincronizar dados pendentes
+function syncPendingData() {
+    // Verificar se há dados pendentes no localStorage
+    const pendingData = localStorage.getItem('pendingData');
+    
+    if (pendingData) {
+        try {
+            const data = JSON.parse(pendingData);
+            
+            // Tentar enviar dados pendentes
+            data.forEach(item => {
+                // Exemplo: enviar posts pendentes
+                if (item.type === 'post') {
+                    createPost(item.content, item.image);
+                }
+            });
+            
+            // Limpar dados pendentes após sincronização
+            localStorage.removeItem('pendingData');
+            
+        } catch (error) {
+            console.error('Erro ao sincronizar dados pendentes:', error);
+        }
+    }
+}
+
+// Função para salvar dados quando offline
+function saveOfflineData(type, data) {
+    if (!navigator.onLine) {
+        let pendingData = JSON.parse(localStorage.getItem('pendingData') || '[]');
+        
+        pendingData.push({
+            type: type,
+            data: data,
+            timestamp: new Date().toISOString()
+        });
+        
+        localStorage.setItem('pendingData', JSON.stringify(pendingData));
+        
+        alert('Dados salvos offline. Serão sincronizados quando voltar online.');
+    }
+}
+
+// Adicionar indicador de conexão no header
+document.addEventListener('DOMContentLoaded', function() {
+    const header = document.querySelector('header .container');
+    if (header) {
+        const connectionStatus = document.createElement('div');
+        connectionStatus.id = 'connectionStatus';
+        connectionStatus.className = 'hidden md:block';
+        
+        header.appendChild(connectionStatus);
+        updateConnectionStatus();
+    }
+});
+function showDataControlPanel() {
+    const panel = document.createElement('div');
+    panel.className = 'fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50';
+    panel.innerHTML = `
+        <div class="glass-effect p-8 max-w-2xl mx-4 text-center animate-fadeIn">
+            <div class="text-blue-500 text-6xl mb-4">
+                <i class="fas fa-chart-bar"></i>
+            </div>
+            <h2 class="text-2xl font-bold text-white mb-4">Painel de Controle de Dados</h2>
+            
+            <div class="space-y-4 mb-6">
+                <div class="bg-gray-800 p-4 rounded-lg">
+                    <h3 class="text-white font-semibold mb-2">Uso de Dados Atual</h3>
+                    <div class="w-full bg-gray-700 rounded-full h-4 mb-2">
+                        <div id="panelDataBar" class="h-4 bg-blue-500 rounded-full transition-all duration-300" style="width: 0%"></div>
+                    </div>
+                    <p id="panelDataText" class="text-gray-300">0 MB / 20 MB</p>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="bg-gray-800 p-4 rounded-lg">
+                        <h4 class="text-white font-semibold">Posts Criados</h4>
+                        <p id="postsCount" class="text-blue-400 text-2xl">0</p>
+                    </div>
+                    <div class="bg-gray-800 p-4 rounded-lg">
+                        <h4 class="text-white font-semibold">Comentários</h4>
+                        <p id="commentsCount" class="text-green-400 text-2xl">0</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="space-y-3">
+                <button onclick="resetUserData()" class="w-full bg-red-600 text-white py-3 rounded-lg hover:bg-red-700 transition">
+                    Resetar Dados (Admin)
+                </button>
+                <button onclick="closeDataPanel()" class="w-full bg-gray-600 text-white py-3 rounded-lg hover:bg-gray-700 transition">
+                    Fechar
+                </button>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(panel);
+    updatePanelData();
+}
+
+function updatePanelData() {
+    const usagePercent = (userDataUsage / maxDataLimit) * 100;
+    const usageMB = (userDataUsage / (1024 * 1024)).toFixed(2);
+    
+    document.getElementById('panelDataBar').style.width = `${Math.min(usagePercent, 100)}%`;
+    document.getElementById('panelDataText').textContent = `${usageMB} MB / 20 MB`;
+}
+
+function closeDataPanel() {
+    const panel = document.querySelector('.fixed.inset-0.bg-black.bg-opacity-75');
+    if (panel) {
+        panel.remove();
+    }
+}
+
+function resetUserData() {
+    if (!currentUser) return;
+    
+    if (adminEmails.includes(currentUser.email)) {
+        userDataUsage = 0;
+        isDataExceeded = false;
+        
+        db.collection('userDataUsage').doc(currentUser.uid).update({
+            usage: 0,
+            lastReset: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        
+        setUserOnline();
+        updateDataDisplay();
+        updatePanelData();
+        alert('Dados resetados com sucesso!');
+    } else {
+        alert('Apenas administradores podem resetar os dados');
+    }
+}
+</script>
         <!-- Header -->
         <header class="glass-effect p-4 sticky top-0 z-50">
             <div class="container flex items-center justify-between">
                 <div class="flex items-center">
+                    
                     <button id="sidebarToggle" class="text-white text-xl mr-4">
                         <i class="fas fa-bars"></i>
                     </button>
                     <h1 class="text-2xl font-bold text-white">American Dev</h1>
                 </div>
+               
                 <div class="flex items-center space-x-4">
                     <div class="relative">
                         <img id="headerProfilePic" src="https://via.placeholder.com/40" alt="Profile" class="profile-pic w-10 h-10">
@@ -1457,7 +1686,323 @@ h3.subtitle {
                     <button onclick="showProfile()" id="profileBtn" class="text-gray-400 hover:text-white pb-2 px-4 font-semibold transition">
                         <i class="fas fa-user mr-2"></i>Perfil
                     </button>
+                   
+
+
+    <script>
+// Variáveis para controle de dados
+let userDataUsage = 0;
+let maxDataLimit = 20 * 1024 * 1024; // 20MB em bytes
+let isDataExceeded = false;
+
+// Função para inicializar o monitoramento de dados
+function initDataMonitoring() {
+    if (!currentUser) return;
+    
+    // Carregar uso de dados atual do usuário
+    db.collection('userDataUsage').doc(currentUser.uid).get()
+        .then((doc) => {
+            if (doc.exists) {
+                userDataUsage = doc.data().usage || 0;
+            } else {
+                // Criar documento inicial para o usuário
+                db.collection('userDataUsage').doc(currentUser.uid).set({
+                    usage: 0,
+                    lastReset: firebase.firestore.FieldValue.serverTimestamp()
+                });
+            }
+            updateDataDisplay();
+        });
+    
+    // Monitorar uso de dados em tempo real
+    startDataMonitoring();
+}
+
+// Função para monitorar uso de dados
+function startDataMonitoring() {
+    // Interceptar requisições de imagens
+    const originalFetch = window.fetch;
+    window.fetch = function(...args) {
+        return originalFetch.apply(this, args).then(response => {
+            if (response.ok) {
+                const contentLength = response.headers.get('content-length');
+                if (contentLength) {
+                    addDataUsage(parseInt(contentLength));
+                }
+            }
+            return response;
+        });
+    };
+    
+    // Monitorar carregamento de imagens
+    const images = document.querySelectorAll('img');
+    images.forEach(img => {
+        img.addEventListener('load', function() {
+            // Estimar tamanho da imagem (aproximado)
+            const imageSize = this.naturalWidth * this.naturalHeight * 3; // RGB
+            addDataUsage(imageSize);
+        });
+    });
+    
+    // Monitorar posts e comentários
+    const originalCreatePost = window.createPost;
+    window.createPost = function() {
+        addDataUsage(1024); // 1KB por post
+        return originalCreatePost.apply(this, arguments);
+    };
+}
+
+// Função para adicionar uso de dados
+function addDataUsage(bytes) {
+    if (!currentUser) return;
+    
+    userDataUsage += bytes;
+    
+    // Atualizar no Firebase
+    db.collection('userDataUsage').doc(currentUser.uid).update({
+        usage: userDataUsage,
+        lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    
+    // Verificar se excedeu o limite
+    if (userDataUsage >= maxDataLimit && !isDataExceeded) {
+        isDataExceeded = true;
+        showDataExceededWarning();
+        setUserOffline();
+    }
+    
+    updateDataDisplay();
+}
+
+// Função para atualizar exibição de dados
+function updateDataDisplay() {
+    const dataBar = document.getElementById('dataUsageBar');
+    const dataText = document.getElementById('dataUsageText');
+    const dataWarning = document.getElementById('dataWarning');
+    
+    if (!dataBar || !dataText) return;
+    
+    const usagePercent = (userDataUsage / maxDataLimit) * 100;
+    const usageMB = (userDataUsage / (1024 * 1024)).toFixed(2);
+    
+    dataBar.style.width = `${Math.min(usagePercent, 100)}%`;
+    dataText.textContent = `${usageMB} MB / 20 MB`;
+    
+    // Alterar cor da barra conforme o uso
+    if (usagePercent >= 100) {
+        dataBar.className = 'h-2 bg-red-500 rounded-full transition-all duration-300';
+        dataWarning.classList.remove('hidden');
+    } else if (usagePercent >= 80) {
+        dataBar.className = 'h-2 bg-yellow-500 rounded-full transition-all duration-300';
+    } else {
+        dataBar.className = 'h-2 bg-green-500 rounded-full transition-all duration-300';
+        dataWarning.classList.add('hidden');
+    }
+}
+
+// Função para mostrar aviso de dados excedidos
+function showDataExceededWarning() {
+    const warningModal = document.createElement('div');
+    warningModal.className = 'fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50';
+    warningModal.innerHTML = `
+        <div class="glass-effect p-8 max-w-md mx-4 text-center animate-fadeIn">
+            <div class="text-red-500 text-6xl mb-4">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <h2 class="text-2xl font-bold text-white mb-4">Limite de Dados Excedido</h2>
+            <p class="text-gray-300 mb-6">
+                Você ultrapassou o limite de 20MB de dados. 
+                Sua conta foi temporariamente colocada offline.
+            </p>
+            <div class="space-y-3">
+                <button onclick="resetDataUsage()" class="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition">
+                    Resetar Dados (Admin)
+                </button>
+                <button onclick="closeDataWarning()" class="w-full bg-gray-600 text-white py-3 rounded-lg hover:bg-gray-700 transition">
+                    Fechar
+                </button>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(warningModal);
+}
+
+// Função para fechar aviso de dados
+function closeDataWarning() {
+    const warning = document.querySelector('.fixed.inset-0.bg-black.bg-opacity-75');
+    if (warning) {
+        warning.remove();
+    }
+}
+
+// Função para resetar uso de dados (apenas admin)
+function resetDataUsage() {
+    if (!currentUser) return;
+    
+    // Verificar se é admin
+    if (adminEmails.includes(currentUser.email)) {
+        userDataUsage = 0;
+        isDataExceeded = false;
+        
+        db.collection('userDataUsage').doc(currentUser.uid).update({
+            usage: 0,
+            lastReset: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        
+        setUserOnline();
+        updateDataDisplay();
+        closeDataWarning();
+        alert('Dados resetados com sucesso!');
+    } else {
+        alert('Apenas administradores podem resetar os dados');
+    }
+}
+
+// Função para colocar usuário offline
+function setUserOffline() {
+    if (!currentUser) return;
+    
+    isOnline = false;
+    db.collection('users').doc(currentUser.uid).update({
+        isOnline: false,
+        dataExceeded: true
+    });
+    
+    updateOnlineStatus(false);
+    
+    // Desabilitar funcionalidades
+    const postButtons = document.querySelectorAll('button');
+    postButtons.forEach(btn => {
+        if (btn.textContent.includes('Publicar') || btn.textContent.includes('Comentar')) {
+            btn.disabled = true;
+            btn.classList.add('opacity-50', 'cursor-not-allowed');
+        }
+    });
+}
+
+// Função para colocar usuário online
+function setUserOnline() {
+    if (!currentUser) return;
+    
+    isOnline = true;
+    db.collection('users').doc(currentUser.uid).update({
+        isOnline: true,
+        dataExceeded: false
+    });
+    
+    updateOnlineStatus(true);
+    
+    // Habilitar funcionalidades
+    const postButtons = document.querySelectorAll('button');
+    postButtons.forEach(btn => {
+        btn.disabled = false;
+        btn.classList.remove('opacity-50', 'cursor-not-allowed');
+    });
+}
+
+// Função para verificar dados no carregamento
+function checkDataUsageOnLoad() {
+    if (!currentUser) return;
+    
+    db.collection('userDataUsage').doc(currentUser.uid).get()
+        .then((doc) => {
+            if (doc.exists) {
+                const data = doc.data();
+                userDataUsage = data.usage || 0;
+                
+                if (userDataUsage >= maxDataLimit) {
+                    isDataExceeded = true;
+                    setUserOffline();
+                }
+                
+                updateDataDisplay();
+            }
+        });
+}
+
+// Atualizar a função showMainApp para incluir monitoramento
+const originalShowMainApp = showMainApp;
+showMainApp = function() {
+    originalShowMainApp();
+    initDataMonitoring();
+    checkDataUsageOnLoad();
+};
+
+// Adicionar ao HTML no header (adicionar após o header existente)
+document.addEventListener('DOMContentLoaded', function() {
+    // Adicionar barra de dados no header
+    const header = document.querySelector('header .container');
+    if (header) {
+        const dataDisplay = document.createElement('div');
+        dataDisplay.className = 'hidden md:flex items-center space-x-4';
+        dataDisplay.innerHTML = `
+            <div class="flex items-center space-x-2">
+                <div class="w-24 bg-gray-700 rounded-full h-2 overflow-hidden">
+                    <div id="dataUsageBar" class="h-2 bg-green-500 rounded-full transition-all duration-300" style="width: 0%"></div>
                 </div>
+                <span id="dataUsageText" class="text-white text-sm">0 MB / 20 MB</span>
+            </div>
+            <div id="dataWarning" class="hidden">
+                <div class="flex items-center space-x-2 bg-red-600 px-3 py-1 rounded-full">
+                    <i class="fas fa-exclamation-triangle text-white text-sm"></i>
+                    <span class="text-white text-sm font-semibold">OFFLINE</span>
+                </div>
+            </div>
+        `;
+        
+        header.insertBefore(dataDisplay, header.lastElementChild);
+    }
+});
+
+// Função para monitorar dados em tempo real
+setInterval(() => {
+    if (currentUser && !isDataExceeded) {
+        // Adicionar uso básico de dados por estar online
+        addDataUsage(100); // 100 bytes por segundo online
+    }
+}, 1000);
+
+// Resetar dados diariamente (apenas para demonstração)
+setInterval(() => {
+    if (currentUser) {
+        db.collection('userDataUsage').doc(currentUser.uid).get()
+            .then((doc) => {
+                if (doc.exists) {
+                    const data = doc.data();
+                    const lastReset = data.lastReset;
+                    const now = new Date();
+                    
+                    if (lastReset && lastReset.toDate) {
+                        const timeDiff = now - lastReset.toDate();
+                        const hoursDiff = timeDiff / (1000 * 60 * 60);
+                        
+                        // Reset após 24 horas
+                        if (hoursDiff >= 24) {
+                            userDataUsage = 0;
+                            isDataExceeded = false;
+                            
+                            db.collection('userDataUsage').doc(currentUser.uid).update({
+                                usage: 0,
+                                lastReset: firebase.firestore.FieldValue.serverTimestamp()
+                            });
+                            
+                            if (isDataExceeded) {
+                                setUserOnline();
+                            }
+                            
+                            updateDataDisplay();
+                        }
+                    }
+                }
+            });
+    }
+}, 60000); // Verificar a cada minuto
+
+    
+    </script>
+                </div>
+
             </nav>
             
             <!-- Feed Section -->
