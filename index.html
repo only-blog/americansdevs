@@ -1379,6 +1379,145 @@ h3.subtitle {
     <span>Dados 20MB</span>
 </button>
         <script>
+        // Código para alternar entre sw2.js e sw3.js
+let currentServiceWorker = null;
+
+// Detectar tipo de conexão
+function detectConnectionType() {
+    return new Promise((resolve) => {
+        // Verificar se tem dados móveis ligados
+        if (!navigator.onLine) {
+            resolve('offline'); // Completamente offline
+            return;
+        }
+        
+        // Tentar uma requisição pequena para verificar se tem saldo
+        fetch('/favicon.ico?' + Date.now(), { 
+            method: 'HEAD',
+            cache: 'no-cache',
+            mode: 'no-cors'
+        }).then(() => {
+            resolve('online'); // Tem saldo/tráfego
+        }).catch(() => {
+            // Dados ligados mas sem saldo
+            resolve('no-credit');
+        });
+    });
+}
+
+// Registrar Service Worker baseado na conexão
+function registerAppropriateServiceWorker() {
+    if (!('serviceWorker' in navigator)) return;
+    
+    detectConnectionType().then(connectionType => {
+        let swPath = '/sw.js'; // Padrão
+        
+        if (connectionType === 'no-credit') {
+            swPath = '/sw2.js'; // Sem saldo
+            console.log('AmericansDevs: Ativando modo SEM SALDO');
+        } else if (connectionType === 'offline') {
+            swPath = '/sw3.js'; // Completamente offline
+            console.log('AmericansDevs: Ativando modo OFFLINE COMPLETO');
+        }
+        
+        // Desregistrar service worker anterior se diferente
+        navigator.serviceWorker.getRegistrations().then(registrations => {
+            const promises = registrations.map(registration => {
+                if (!registration.active.scriptURL.includes(swPath)) {
+                    return registration.unregister();
+                }
+            });
+            
+            return Promise.all(promises);
+        }).then(() => {
+            // Registrar novo service worker
+            return navigator.serviceWorker.register(swPath);
+        }).then(registration => {
+            console.log('AmericansDevs SW registrado:', swPath);
+            currentServiceWorker = swPath;
+            
+            // Mostrar indicador do modo ativo
+            showConnectionMode(connectionType);
+        });
+    });
+}
+
+// Mostrar modo de conexão ativo
+function showConnectionMode(mode) {
+    const indicator = document.createElement('div');
+    indicator.id = 'connection-mode';
+    indicator.className = 'fixed top-4 right-4 px-4 py-2 rounded-lg text-white text-sm z-50';
+    
+    switch(mode) {
+        case 'online':
+            indicator.className += ' bg-green-600';
+            indicator.innerHTML = `
+                <div class="flex items-center space-x-2">
+                    <div class="w-2 h-2 bg-white rounded-full"></div>
+                    <span>Online Normal</span>
+                </div>
+            `;
+            break;
+            
+        case 'no-credit':
+            indicator.className += ' bg-orange-600';
+            indicator.innerHTML = `
+                <div class="flex items-center space-x-2">
+                    <div class="w-2 h-2 bg-white rounded-full animate-pulse"></div>
+                    <span>Modo Econômico</span>
+                </div>
+            `;
+            break;
+            
+        case 'offline':
+            indicator.className += ' bg-red-600';
+            indicator.innerHTML = `
+                <div class="flex items-center space-x-2">
+                    <div class="w-2 h-2 bg-white rounded-full"></div>
+                    <span>Offline Completo</span>
+                </div>
+            `;
+            break;
+    }
+    
+    document.body.appendChild(indicator);
+    
+    // Remover após 5 segundos
+    setTimeout(() => {
+        indicator.remove();
+    }, 5000);
+}
+
+// Verificar periodicamente e trocar SW se necessário
+function monitorConnection() {
+    setInterval(() => {
+        detectConnectionType().then(connectionType => {
+            let expectedSW = '/sw.js';
+            
+            if (connectionType === 'no-credit') {
+                expectedSW = '/sw2.js';
+            } else if (connectionType === 'offline') {
+                expectedSW = '/sw3.js';
+            }
+            
+            // Se mudou o tipo de conexão, trocar SW
+            if (currentServiceWorker !== expectedSW) {
+                console.log('AmericansDevs: Mudança de conexão detectada, trocando SW');
+                registerAppropriateServiceWorker();
+            }
+        });
+    }, 30000); // Verificar a cada 30 segundos
+}
+
+// Inicializar
+document.addEventListener('DOMContentLoaded', function() {
+    registerAppropriateServiceWorker();
+    monitorConnection();
+    
+    // Escutar mudanças de conexão
+    window.addEventListener('online', registerAppropriateServiceWorker);
+    window.addEventListener('offline', registerAppropriateServiceWorker);
+});
         // Detector de conexão
 let isOnlineStatus = navigator.onLine;
 
